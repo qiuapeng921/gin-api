@@ -36,5 +36,5 @@ go run main.go
 
 ## 特性
 - Gin
-- Gorm
+- Xorm
 - Redis
