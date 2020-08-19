@@ -7,7 +7,7 @@ func GetAdminById(id int) (res bool, err error, entity Entity) {
 	return
 }
 
-func GetAdminByUserName(username string) (res bool, err error, entity Entity) {
-	res, err = grom.GetOrm().Where("username=?", username).Get(&entity)
+func GetAdminByUserName(username string) (res bool, err error) {
+	res, err = grom.GetOrm().Where("username=?", username).Get(&Entity{})
 	return
 }
