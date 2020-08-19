@@ -14,4 +14,13 @@ func SetupRouter(router *gin.Engine) {
 	router.Use(middleware.RequestLog())
 
 	router.GET("/", controller.Index)
+
+	user := router.Group("/user")
+	{
+		user.GET("/get_all", controller.UserList)
+		user.GET("/insert", controller.UserInsert)
+		user.GET("/update", controller.UserUpdate)
+		user.GET("/delete", controller.UserDelete)
+		user.GET("/force_delete", controller.UserForceDelete)
+	}
 }
