@@ -14,6 +14,7 @@ func SetupRouter(router *gin.Engine) {
 	router.Use(middleware.RequestLog())
 
 	router.GET("/", controller.Index)
+	router.GET("/ws", controller.WebSocketHandler)
 
 	user := router.Group("/user")
 	{
