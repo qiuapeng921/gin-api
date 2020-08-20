@@ -1,3 +1,5 @@
 package permissions
 
-// Fill with you ideas below.
+func GetPermByUserId(userId int) {
+
+}

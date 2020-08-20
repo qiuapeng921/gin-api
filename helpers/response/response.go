@@ -2,7 +2,6 @@ package response
 
 import (
 	"fmt"
-	"gin-api/app/consts"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -21,22 +20,12 @@ type Response struct {
 	Data    interface{} `json:"data"`
 }
 
-// Response setting gin.JSON
-func (wrapper *Wrapper) Response(httpCode, errCode int, data interface{}) {
-	wrapper.JSON(httpCode, Response{
-		Code:    errCode,
-		Message: consts.GetMsg(errCode),
-		Data:    data,
-	})
-	return
-}
-
 func (wrapper *Wrapper) View(name string, data ...interface{}) {
 	responseData := interface{}(nil)
 	if len(data) > 0 {
 		responseData = data[0]
 	}
-	wrapper.HTML(200, fmt.Sprintf("%s.html", name), responseData)
+	wrapper.HTML(http.StatusOK, fmt.Sprintf("%s.html", name), responseData)
 	return
 }
 
@@ -45,11 +34,18 @@ func (wrapper *Wrapper) Success(data ...interface{}) {
 	if len(data) > 0 {
 		responseData = data[0]
 	}
-	wrapper.Response(http.StatusOK, http.StatusOK, responseData)
+	wrapper.JSON(http.StatusOK, Response{
+		Code:    http.StatusOK,
+		Message: "Success",
+		Data:    responseData,
+	})
 	return
 }
 
-func (wrapper *Wrapper) Error(errCode int) {
-	wrapper.Response(http.StatusOK, errCode, "")
+func (wrapper *Wrapper) Error(errCode int, message string) {
+	wrapper.JSON(http.StatusOK, Response{
+		Code:    errCode,
+		Message: message,
+	})
 	return
 }

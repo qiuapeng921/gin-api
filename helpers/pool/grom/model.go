@@ -29,8 +29,9 @@ func SetUpOrm() {
 	client.SetMaxOpenConns(maxOpen)
 	fmt.Println("mysql连接成功")
 
-	client.ShowSQL(true)
+	client.ShowSQL(false)
 	client.Logger().SetLevel(log.LOG_DEBUG)
+
 }
 
 func GetOrm() *xorm.Engine {

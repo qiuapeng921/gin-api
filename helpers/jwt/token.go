@@ -18,8 +18,9 @@ type MapClaims struct {
 }
 
 // GenerateToken generate tokens used for auth
-func GenerateToken(id uint, account, category string) (string, error) {
+func GenerateToken(id uint, account, category string) (string, int64, error) {
 	nowTime := time.Now()
+	// token 有效期 24小时
 	expireTime := nowTime.Add(24 * time.Hour)
 
 	claims := MapClaims{
@@ -34,7 +35,7 @@ func GenerateToken(id uint, account, category string) (string, error) {
 	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, err := tokenClaims.SignedString([]byte(jwtSecret))
 
-	return token, err
+	return token, claims.ExpiresAt, err
 }
 
 // ParseToken parsing token

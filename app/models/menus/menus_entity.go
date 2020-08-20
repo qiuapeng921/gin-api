@@ -9,9 +9,9 @@ type Entity struct {
 	ParentId  int    `xorm:"not null default 0 comment('上级id') INT(10)" json:"parent_id"`
 	Icon      string `xorm:"not null default '' comment('图标') VARCHAR(50)" json:"icon"`
 	Status    int    `xorm:"not null default 1 comment('状态 1 正常 0 删除') TINYINT(1)" json:"status"`
-	CreatedAt int    `xorm:"not null default 0 comment('添加时间') INT(11)" json:"created_at"`
-	UpdatedAt int    `xorm:"not null default 0 comment('修改时间') INT(11)" json:"updated_at"`
-	DeletedAt int    `xorm:"not null default 0 comment('删除时间') INT(11)" json:"deleted_at"`
+	CreatedAt int    `xorm:"created not null default 0 comment('添加时间') INT(11)" json:"created_at"`
+	UpdatedAt int    `xorm:"updated not null default 0 comment('修改时间') INT(11)" json:"updated_at"`
+	DeletedAt int    `xorm:"deleted not null default 0 comment('删除时间') INT(11)" json:"deleted_at"`
 }
 
 func (Entity) TableName() string {

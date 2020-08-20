@@ -11,9 +11,9 @@ type Entity struct {
 	LikeCount    int64  `xorm:"not null default 0 comment('喜欢数') BIGINT(20)" json:"like_count"`
 	CommentCount int64  `xorm:"not null default 0 comment('评论总数') BIGINT(20)" json:"comment_count"`
 	Status       int    `xorm:"not null default 0 comment('0 正常 1 删除') TINYINT(1)" json:"status"`
-	CreatedAt    int    `xorm:"not null default 0 comment('添加时间') INT(11)" json:"created_at"`
-	UpdatedAt    int    `xorm:"not null default 0 comment('修改时间') INT(11)" json:"updated_at"`
-	DeletedAt    int    `xorm:"not null default 0 comment('删除时间') INT(11)" json:"deleted_at"`
+	CreatedAt    int    `xorm:"created not null default 0 comment('添加时间') INT(11)" json:"created_at"`
+	UpdatedAt    int    `xorm:"updated not null default 0 comment('修改时间') INT(11)" json:"updated_at"`
+	DeletedAt    int    `xorm:"deleted not null default 0 comment('删除时间') INT(11)" json:"deleted_at"`
 }
 
 func (Entity) TableName() string {

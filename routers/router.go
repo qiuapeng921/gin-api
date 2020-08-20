@@ -11,10 +11,16 @@ func SetupRouter(router *gin.Engine) {
 	router.Static("/static", "./public/assets")
 	router.StaticFile("/favicon.ico", "./public/favicon.ico")
 
-	router.Use(middleware.RequestLog())
+	router.Use(middleware.RequestLog(),middleware.Cors())
 
 	router.GET("/", controller.Index)
 	router.GET("/ws", controller.WebSocketHandler)
+
+
+	api := router.Group("/api")
+	{
+		api.POST("/login", controller.Login)
+	}
 
 	user := router.Group("/user")
 	{

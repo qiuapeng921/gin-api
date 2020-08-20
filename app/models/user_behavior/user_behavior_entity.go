@@ -10,9 +10,9 @@ type Entity struct {
 	BrowserType     string `xorm:"not null default '' comment('浏览器类型') VARCHAR(32)" json:"browser_type"`
 	BrowserVersion  string `xorm:"not null default '' comment('浏览器版本') VARCHAR(64)" json:"browser_version"`
 	LoginIp         string `xorm:"not null default '' comment('登录ip') VARCHAR(50)" json:"login_ip"`
-	CreatedAt       int    `xorm:"not null default 0 comment('添加时间') INT(11)" json:"created_at"`
-	UpdatedAt       int    `xorm:"not null default 0 comment('修改时间') INT(11)" json:"updated_at"`
-	DeletedAt       int    `xorm:"not null default 0 comment('删除时间') INT(11)" json:"deleted_at"`
+	CreatedAt       int    `xorm:"created not null default 0 comment('添加时间') INT(11)" json:"created_at"`
+	UpdatedAt       int    `xorm:"updated not null default 0 comment('修改时间') INT(11)" json:"updated_at"`
+	DeletedAt       int    `xorm:"deleted not null default 0 comment('删除时间') INT(11)" json:"deleted_at"`
 }
 
 func (Entity) TableName() string {

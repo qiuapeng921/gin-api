@@ -37,6 +37,7 @@ func WebSocketHandler(c *gin.Context) {
 			if err != nil {
 				break
 			}
+			continue
 		}
 		// todo：业务操作
 		err = onMessage(conn, msgType, string(msg))

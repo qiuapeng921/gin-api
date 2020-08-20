@@ -6,9 +6,9 @@ type Entity struct {
 	Key       string `xorm:"not null comment('键') VARCHAR(50)" json:"key"`
 	Value     int    `xorm:"not null comment('值') TINYINT(255)" json:"value"`
 	Desc      string `xorm:"comment('描述') VARCHAR(255)" json:"desc"`
-	CreatedAt int    `xorm:"not null default 0 comment('添加时间') INT(11)" json:"created_at"`
-	UpdatedAt int    `xorm:"not null default 0 comment('修改时间') INT(11)" json:"updated_at"`
-	DeletedAt int    `xorm:"not null default 0 comment('删除时间') INT(11)" json:"deleted_at"`
+	CreatedAt int    `xorm:"created not null default 0 comment('添加时间') INT(11)" json:"created_at"`
+	UpdatedAt int    `xorm:"updated not null default 0 comment('修改时间') INT(11)" json:"updated_at"`
+	DeletedAt int    `xorm:"deleted not null default 0 comment('删除时间') INT(11)" json:"deleted_at"`
 }
 
 func (Entity) TableName() string {

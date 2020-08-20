@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserList(c *gin.Context)  {
+func UserList(c *gin.Context) {
 	var userModel []users.Entity
 	err := grom.GetOrm().Unscoped().OrderBy("id desc").Find(&userModel)
 	if err != nil {
@@ -18,7 +18,9 @@ func UserList(c *gin.Context)  {
 	return
 }
 
-func UserInsert(c *gin.Context)  {
+func UserInsert(c *gin.Context) {
+	var responseData []int64
+	var errCount []int64
 	for i := 0; i < 10; i++ {
 		var userModel users.Entity
 		userModel.Username = "admin" + fmt.Sprintf("%d", i)
@@ -26,14 +28,16 @@ func UserInsert(c *gin.Context)  {
 		userModel.Phone = "1524927977" + fmt.Sprintf("%d", i)
 		result, err := grom.GetOrm().Insert(&userModel)
 		if err != nil {
-			fmt.Println("err", err.Error())
+			errCount = append(errCount, result)
+		} else {
+			responseData = append(responseData, result)
 		}
-		fmt.Println(result)
 	}
+	response.Context(c).Success(gin.H{"success": len(responseData), "error": len(errCount)})
 	return
 }
 
-func UserUpdate(c *gin.Context)  {
+func UserUpdate(c *gin.Context) {
 	avatar := c.Query("avatar")
 	var userModel users.Entity
 	userModel.Avatar = avatar
@@ -46,7 +50,7 @@ func UserUpdate(c *gin.Context)  {
 	return
 }
 
-func UserDelete(c *gin.Context)  {
+func UserDelete(c *gin.Context) {
 	var userModel users.Entity
 	result, err := grom.GetOrm().Where("status=?", 0).Delete(&userModel)
 	if err != nil {
@@ -57,7 +61,7 @@ func UserDelete(c *gin.Context)  {
 	return
 }
 
-func UserForceDelete(c *gin.Context)  {
+func UserForceDelete(c *gin.Context) {
 	var userModel users.Entity
 	result, err := grom.GetOrm().Where("status=?", 0).Unscoped().Delete(&userModel)
 	if err != nil {
