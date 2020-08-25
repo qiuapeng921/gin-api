@@ -1,4 +1,4 @@
-package controller
+package admin
 
 import (
 	"gin-api/app/models/admins"
@@ -10,13 +10,13 @@ import (
 	"time"
 )
 
-type requestData struct {
+type authRequestData struct {
 	UserName string `json:"username" from:"username" binding:"required"`
 	Password string `json:"password" from:"password" binding:"required"`
 }
 
 func Login(ctx *gin.Context) {
-	var request requestData
+	var request authRequestData
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		response.Context(ctx).Error(10000, err.Error())
 		return
@@ -35,7 +35,7 @@ func Login(ctx *gin.Context) {
 		response.Context(ctx).Error(10003, "密码错误")
 		return
 	}
-	token, expiresAt, genTokenErr := jwt.GenerateToken(uint(result.Id), result.Username, "api")
+	token, expiresAt, genTokenErr := jwt.GenerateToken(uint(result.Id), result.Username, "admin")
 	tokenExpiresAt := time.Now().Unix()
 
 	_, cacheErr := gredis.GetRedis().Set("admin_token:"+result.Username, token, time.Duration(expiresAt-tokenExpiresAt)*time.Second).Result()

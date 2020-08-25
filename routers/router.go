@@ -8,26 +8,15 @@ import (
 
 func SetupRouter(router *gin.Engine) {
 	router.LoadHTMLGlob("templates/*")
-	router.Static("/static", "./public/assets")
 	router.StaticFile("/favicon.ico", "./public/favicon.ico")
 
-	router.Use(middleware.RequestLog(),middleware.Cors())
+	router.Use(middleware.RequestLog(), middleware.Cors())
 
 	router.GET("/", controller.Index)
 	router.GET("/ws", controller.WebSocketHandler)
 
-
-	api := router.Group("/api")
-	{
-		api.POST("/login", controller.Login)
-	}
-
-	user := router.Group("/user")
-	{
-		user.GET("/get_all", controller.UserList)
-		user.GET("/insert", controller.UserInsert)
-		user.GET("/update", controller.UserUpdate)
-		user.GET("/delete", controller.UserDelete)
-		user.GET("/force_delete", controller.UserForceDelete)
-	}
+	// 加载后台路由组
+	InitAdminRouter(router)
+	// 加载前台路由组
+	InitApiRouter(router)
 }

@@ -1,12 +1,16 @@
 package middleware
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
-	"log"
 )
 
 func RequestLog() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		log.Println(c.Request.URL)
+	return func(ctx *gin.Context) {
+		fmt.Printf("域名：%s ,请求地址：%s \n",
+			ctx.Request.Host,
+			ctx.Request.URL.Path,
+		)
+		ctx.Next()
 	}
 }

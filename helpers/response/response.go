@@ -26,6 +26,7 @@ func (wrapper *Wrapper) View(name string, data ...interface{}) {
 		responseData = data[0]
 	}
 	wrapper.HTML(http.StatusOK, fmt.Sprintf("%s.html", name), responseData)
+	wrapper.Abort()
 	return
 }
 
@@ -39,6 +40,7 @@ func (wrapper *Wrapper) Success(data ...interface{}) {
 		Message: "Success",
 		Data:    responseData,
 	})
+	wrapper.Abort()
 	return
 }
 
@@ -47,5 +49,6 @@ func (wrapper *Wrapper) Error(errCode int, message string) {
 		Code:    errCode,
 		Message: message,
 	})
+	wrapper.Abort()
 	return
 }
