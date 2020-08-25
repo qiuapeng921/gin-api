@@ -2,6 +2,7 @@ package response
 
 import (
 	"fmt"
+	"gin-api/app/consts"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -44,10 +45,14 @@ func (wrapper *Wrapper) Success(data ...interface{}) {
 	return
 }
 
-func (wrapper *Wrapper) Error(errCode int, message string) {
+func (wrapper *Wrapper) Error(errCode int, message ...string) {
+	responseMessage := consts.GetMsg(errCode)
+	if len(message) > 0 {
+		responseMessage = message[0]
+	}
 	wrapper.JSON(http.StatusOK, Response{
 		Code:    errCode,
-		Message: message,
+		Message: responseMessage,
 	})
 	wrapper.Abort()
 	return
