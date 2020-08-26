@@ -16,12 +16,16 @@ import (
 	"gin-api/app/models/tags"
 	"gin-api/app/models/user_behavior"
 	"gin-api/app/models/users"
-	"gin-api/helpers/pool/grom"
+	"gin-api/helpers/db"
 	"gin-api/helpers/system"
+	"xorm.io/xorm"
 )
 
+var orm *xorm.Engine
+
 func AutoGenTable() {
-	_ = grom.GetOrm().Sync2(
+	orm = db.Xorm()
+	_ = orm.Sync2(
 		&admins.Entity{},
 		&admin_role.Entity{},
 		&articles.Entity{},
@@ -38,7 +42,7 @@ func AutoGenTable() {
 		&user_behavior.Entity{},
 	)
 
-	if result, _ := grom.GetOrm().IsTableEmpty(&admins.Entity{}); result {
+	if result, _ := db.Xorm().IsTableEmpty(&admins.Entity{}); result {
 		defaultData()
 	}
 }
@@ -48,7 +52,7 @@ func defaultData() {
 	admin.Username = "admin"
 	admin.Password = system.EncodeMD5("123456")
 	admin.Phone = "15249279779"
-	if _, err := grom.GetOrm().InsertOne(&admin); err != nil {
+	if _, err := orm.InsertOne(&admin); err != nil {
 		fmt.Println("初始化超管失败," + err.Error())
 	}
 	fmt.Println("初始化超管成功")
@@ -56,7 +60,7 @@ func defaultData() {
 	var role roles.Entity
 	role.RoleName = "超管"
 	role.RoleDesc = "超级管理员"
-	if _, err := grom.GetOrm().Insert(&role); err != nil {
+	if _, err := orm.Insert(&role); err != nil {
 		fmt.Println("初始化角色失败," + err.Error())
 	}
 	fmt.Println("初始化角色成功")
@@ -64,7 +68,7 @@ func defaultData() {
 	var adminRole admin_role.Entity
 	adminRole.AdminId = 1
 	adminRole.RoleId = 1
-	if _, err := grom.GetOrm().Insert(&adminRole); err != nil {
+	if _, err := orm.Insert(&adminRole); err != nil {
 		fmt.Println("初始化用户角色关系失败," + err.Error())
 	}
 	fmt.Println("初始化用户角色关系成功")

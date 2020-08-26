@@ -1,13 +1,15 @@
 package roles
 
-import "gin-api/helpers/pool/grom"
+import (
+	"gin-api/helpers/db"
+)
 
 func GetRole() (entity []Entity, err error) {
-	err = grom.GetOrm().Find(&entity)
+	err = db.Xorm().Find(&entity)
 	return
 }
 
 func GetRoleById(id int) (entity Entity, err error) {
-	_, err = grom.GetOrm().Where("id=?", id).Get(&entity)
+	_, err = db.Xorm().Where("id=?", id).Get(&entity)
 	return
 }

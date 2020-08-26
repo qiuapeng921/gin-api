@@ -10,7 +10,11 @@ func SetupRouter(router *gin.Engine) {
 	router.LoadHTMLGlob("templates/*")
 	router.StaticFile("/favicon.ico", "./public/favicon.ico")
 
-	router.Use(middleware.RequestLog(), middleware.Cors())
+	router.Use(
+		middleware.RequestLog(),
+		middleware.Cors(),
+		middleware.HandleException(),
+	)
 
 	router.GET("/", controller.Index)
 	router.GET("/ws", controller.WebSocketHandler)
