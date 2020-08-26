@@ -2,8 +2,8 @@ package admin
 
 import (
 	"gin-api/app/models/admins"
+	"gin-api/helpers/db"
 	"gin-api/helpers/jwt"
-	"gin-api/helpers/pool/gredis"
 	"gin-api/helpers/response"
 	"gin-api/helpers/system"
 	"github.com/gin-gonic/gin"
@@ -17,7 +17,7 @@ type authRequestData struct {
 
 func Login(ctx *gin.Context) {
 	var request authRequestData
-	if err := ctx.ShouldBindJSON(&request); err != nil {
+	if err := ctx.ShouldBind(&request); err != nil {
 		response.Context(ctx).Error(10000, err.Error())
 		return
 	}
@@ -38,7 +38,7 @@ func Login(ctx *gin.Context) {
 	token, expiresAt, genTokenErr := jwt.GenerateToken(uint(result.Id), result.Username, "admin")
 	tokenExpiresAt := time.Now().Unix()
 
-	_, cacheErr := gredis.GetRedis().Set("admin_token:"+result.Username, token, time.Duration(expiresAt-tokenExpiresAt)*time.Second).Result()
+	_, cacheErr := db.Redis().Set("admin_token:"+result.Username, token, time.Duration(expiresAt-tokenExpiresAt)*time.Second).Result()
 	if cacheErr != nil {
 		response.Context(ctx).Error(10003, "cache err"+cacheErr.Error())
 		return

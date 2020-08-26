@@ -1,4 +1,4 @@
-package grom
+package db
 
 import (
 	"fmt"
@@ -9,9 +9,9 @@ import (
 	"xorm.io/xorm/log"
 )
 
-var client *xorm.Engine
+var mysqlClient *xorm.Engine
 
-func SetUpOrm() {
+func SetUpXorm() {
 	database := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=True&loc=Local",
 		os.Getenv("DB_USERNAME"),
 		os.Getenv("DB_PASSWORD"),
@@ -19,21 +19,21 @@ func SetUpOrm() {
 		os.Getenv("DB_DATABASE"),
 		os.Getenv("DB_CHARSET"))
 	var err error
-	client, err = xorm.NewEngine("mysql", database)
+	mysqlClient, err = xorm.NewEngine("mysql", database)
 	if err != nil {
 		panic(err.Error())
 	}
 	maxIdle, _ := strconv.Atoi(os.Getenv("DB_MAX_IDLE"))
 	maxOpen, _ := strconv.Atoi(os.Getenv("DB_MAX_OPEN"))
-	client.SetMaxIdleConns(maxIdle)
-	client.SetMaxOpenConns(maxOpen)
+	mysqlClient.SetMaxIdleConns(maxIdle)
+	mysqlClient.SetMaxOpenConns(maxOpen)
 	fmt.Println("mysql连接成功")
 
-	client.ShowSQL(false)
-	client.Logger().SetLevel(log.LOG_DEBUG)
+	mysqlClient.ShowSQL(false)
+	mysqlClient.Logger().SetLevel(log.LOG_DEBUG)
 
 }
 
-func GetOrm() *xorm.Engine {
-	return client
+func Xorm() *xorm.Engine {
+	return mysqlClient
 }

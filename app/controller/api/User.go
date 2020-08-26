@@ -3,14 +3,14 @@ package api
 import (
 	"fmt"
 	"gin-api/app/models/users"
-	"gin-api/helpers/pool/grom"
+	"gin-api/helpers/db"
 	"gin-api/helpers/response"
 	"github.com/gin-gonic/gin"
 )
 
 func UserList(c *gin.Context) {
 	var userModel []users.Entity
-	err := grom.GetOrm().Unscoped().OrderBy("id desc").Find(&userModel)
+	err := db.Xorm().Unscoped().OrderBy("id desc").Find(&userModel)
 	if err != nil {
 		fmt.Println("err", err.Error())
 	}
@@ -26,7 +26,7 @@ func UserInsert(c *gin.Context) {
 		userModel.Username = "admin" + fmt.Sprintf("%d", i)
 		userModel.Password = "123456"
 		userModel.Phone = "1524927977" + fmt.Sprintf("%d", i)
-		result, err := grom.GetOrm().Insert(&userModel)
+		result, err := db.Xorm().Insert(&userModel)
 		if err != nil {
 			errCount = append(errCount, result)
 		} else {
@@ -41,7 +41,7 @@ func UserUpdate(c *gin.Context) {
 	avatar := c.Query("avatar")
 	var userModel users.Entity
 	userModel.Avatar = avatar
-	result, err := grom.GetOrm().Where("status=?", 0).Update(&userModel)
+	result, err := db.Xorm().Where("status=?", 0).Update(&userModel)
 	if err != nil {
 		response.Context(c).JSON(200, gin.H{"err": err.Error()})
 		return
@@ -52,7 +52,7 @@ func UserUpdate(c *gin.Context) {
 
 func UserDelete(c *gin.Context) {
 	var userModel users.Entity
-	result, err := grom.GetOrm().Where("status=?", 0).Delete(&userModel)
+	result, err := db.Xorm().Where("status=?", 0).Delete(&userModel)
 	if err != nil {
 		response.Context(c).JSON(200, gin.H{"err": err.Error()})
 		return
@@ -63,7 +63,7 @@ func UserDelete(c *gin.Context) {
 
 func UserForceDelete(c *gin.Context) {
 	var userModel users.Entity
-	result, err := grom.GetOrm().Where("status=?", 0).Unscoped().Delete(&userModel)
+	result, err := db.Xorm().Where("status=?", 0).Unscoped().Delete(&userModel)
 	if err != nil {
 		response.Context(c).JSON(200, gin.H{"err": err.Error()})
 		return

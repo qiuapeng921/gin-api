@@ -2,7 +2,7 @@ package admin
 
 import (
 	"gin-api/app/models/roles"
-	"gin-api/helpers/pool/grom"
+	"gin-api/helpers/db"
 	"gin-api/helpers/response"
 	"github.com/gin-gonic/gin"
 )
@@ -33,7 +33,7 @@ func RoleCreate(ctx *gin.Context) {
 	roleModel.RoleDesc = request.RoleDesc
 	roleModel.Status = request.Status
 
-	_, err := grom.GetOrm().InsertOne(&roleModel)
+	_, err := db.Xorm().InsertOne(&roleModel)
 	if err != nil {
 		response.Context(ctx).Error(10001, err.Error())
 	}
