@@ -6,7 +6,6 @@ import (
 	"gin-api/helpers/system"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	"github.com/rs/xid"
 	"log"
 	"net/http"
 	"time"
@@ -19,14 +18,8 @@ type Message struct {
 	From string `json:"from"`
 }
 
-var (
-	// 用户连接绑定全局Id
-	connBindId = make(map[xid.ID]*websocket.Conn, 200)
-	// 用户绑定用户连接id
-	userConnId = make(map[string]xid.ID, 200)
-	// 用户连接id绑定用户
-	connUserId = make(map[xid.ID]string, 200)
-)
+// 用户绑定用户连接id
+var userClient = make(map[string]*websocket.Conn, 200)
 
 var wsUpGrader = websocket.Upgrader{
 	ReadBufferSize:   1024,
@@ -82,20 +75,10 @@ func onOpen(response http.ResponseWriter, request *http.Request) (conn *websocke
 	if username == "" {
 		return conn, errors.New("username不能为空")
 	}
-
-	// 将全局Id和conn绑定
-	connId := xid.New()
-	connBindId[connId] = conn
-
 	// 将用户和用户连接Id绑定
-	userConnId[username] = connId
+	userClient[username] = conn
 
-	// 将用户连接Id和用户绑定
-	connUserId[connId] = username
-
-	fmt.Println("-------------connBindId----------------------", connBindId)
-	fmt.Println("-------------userConnId----------------------", userConnId)
-	fmt.Println("-------------connUserId----------------------", connUserId)
+	fmt.Println("-------------userClient----------------------", userClient)
 
 	_ = conn.WriteMessage(websocket.TextMessage, []byte("welcome"))
 	return
@@ -107,16 +90,11 @@ func onMessage(conn *websocket.Conn, msgType int, data string) (err error) {
 	_ = system.JsonToStruct(data, &message)
 	if message.Type == "chat" {
 		from := message.From
-		if connId, ok := userConnId[from]; ok {
-			if fromConn, ok := connBindId[connId]; ok {
-				_ = fromConn.WriteMessage(websocket.TextMessage, []byte(message.Data))
-			} else {
-				_ = conn.WriteMessage(websocket.TextMessage, []byte("connId不存在"))
-			}
+		if fromClient, ok := userClient[from]; ok {
+			_ = fromClient.WriteMessage(websocket.TextMessage, []byte("connId不存在"))
 		} else {
 			_ = conn.WriteMessage(websocket.TextMessage, []byte(from+"不在线"))
 		}
-
 	} else {
 		err = conn.WriteMessage(msgType, []byte(data))
 	}
