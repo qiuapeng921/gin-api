@@ -122,7 +122,7 @@ func onClone(conn *websocket.Conn) {
 	if user, ok := clientUser[conn]; ok {
 		delete(userClient, user)
 		delete(clientUser, conn)
-		fmt.Println("=============================", clientUser)
+		fmt.Println("=============================", userClient)
 		fmt.Println("=============================", clientUser)
 		fmt.Println(user + "用户下线")
 	} else {
