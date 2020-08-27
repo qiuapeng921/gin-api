@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"errors"
 	"fmt"
 	"gin-api/helpers/system"
 	"github.com/gin-gonic/gin"
@@ -18,8 +17,12 @@ type Message struct {
 	From string `json:"from"`
 }
 
-// 用户绑定用户连接id
-var userClient = make(map[string]*websocket.Conn, 200)
+var (
+	// 连接绑定用户
+	clientUser = make(map[*websocket.Conn]string, 200)
+	// 用户绑定连接
+	userClient = make(map[string]*websocket.Conn, 200)
+)
 
 var wsUpGrader = websocket.Upgrader{
 	ReadBufferSize:   1024,
@@ -33,11 +36,8 @@ var wsUpGrader = websocket.Upgrader{
 
 // 循环处理消息数据
 func WebSocketHandler(c *gin.Context) {
-	conn, err := onOpen(c.Writer, c.Request)
+	conn, err := onOpen(c)
 	if err != nil {
-		_ = conn.WriteMessage(websocket.TextMessage, []byte(err.Error()))
-		_ = conn.Close()
-		c.Abort()
 		return
 	}
 
@@ -64,21 +64,27 @@ func WebSocketHandler(c *gin.Context) {
 }
 
 // 初始化连接
-func onOpen(response http.ResponseWriter, request *http.Request) (conn *websocket.Conn, err error) {
-	conn, err = wsUpGrader.Upgrade(response, request, nil)
+func onOpen(c *gin.Context) (conn *websocket.Conn, err error) {
+	conn, err = wsUpGrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		log.Println("websocket upgrade err:", err.Error())
+		c.Abort()
 		return
 	}
 
-	username := request.URL.Query().Get("username")
-	if username == "" {
-		return conn, errors.New("username不能为空")
+	user := c.Query("user")
+	if user == "" {
+		_ = conn.WriteMessage(websocket.TextMessage, []byte("v[不能为空]"))
+		_ = conn.Close()
+		c.Abort()
 	}
-	// 将用户和用户连接Id绑定
-	userClient[username] = conn
+	// 将用户绑定连接地址
+	userClient[user] = conn
+	// 连接地址绑定用户
+	clientUser[conn] = user
 
 	fmt.Println("-------------userClient----------------------", userClient)
+	fmt.Println("-------------clientUser----------------------", clientUser)
 
 	_ = conn.WriteMessage(websocket.TextMessage, []byte("welcome"))
 	return
@@ -90,7 +96,7 @@ func onMessage(conn *websocket.Conn, msgType int, data string) (err error) {
 	_ = system.JsonToStruct(data, &message)
 	if message.Type == "chat" {
 		if fromClient, ok := userClient[message.From]; ok {
-			_ = fromClient.WriteMessage(websocket.TextMessage, []byte("connId不存在"))
+			_ = fromClient.WriteMessage(websocket.TextMessage, []byte(message.Data))
 		} else {
 			_ = conn.WriteMessage(websocket.TextMessage, []byte(message.From+"不在线"))
 		}
@@ -102,6 +108,14 @@ func onMessage(conn *websocket.Conn, msgType int, data string) (err error) {
 
 // 连接断开
 func onClone(conn *websocket.Conn) {
-	conn.CloseHandler()
-	log.Println("用户下线")
+	if user, ok := clientUser[conn]; ok {
+		delete(userClient, user)
+		delete(clientUser, conn)
+		fmt.Println("=============================", clientUser)
+		fmt.Println("=============================", clientUser)
+		fmt.Println(user + "用户下线")
+	} else {
+		fmt.Println(user + "不存在")
+	}
+
 }
