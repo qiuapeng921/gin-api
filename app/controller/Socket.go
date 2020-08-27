@@ -74,9 +74,14 @@ func onOpen(c *gin.Context) (conn *websocket.Conn, err error) {
 
 	user := c.Query("user")
 	if user == "" {
-		_ = conn.WriteMessage(websocket.TextMessage, []byte("v[不能为空]"))
+		_ = conn.WriteMessage(websocket.TextMessage, []byte("user[不能为空]"))
 		_ = conn.Close()
 		c.Abort()
+	}
+	// 判断用户是否在线 在线则推送下线通知
+	if beforeUser, ok := userClient[user]; ok {
+		_ = beforeUser.WriteMessage(websocket.TextMessage, []byte("别处登录"))
+		_ = beforeUser.Close()
 	}
 	// 将用户绑定连接地址
 	userClient[user] = conn
@@ -93,8 +98,14 @@ func onOpen(c *gin.Context) (conn *websocket.Conn, err error) {
 // 收到消息处理
 func onMessage(conn *websocket.Conn, msgType int, data string) (err error) {
 	var message Message
-	_ = system.JsonToStruct(data, &message)
+	// 判断是否成功绑定消息到结构体
+	if err := system.JsonToStruct(data, &message); err != nil {
+		_ = conn.WriteMessage(websocket.TextMessage, []byte("消息体格式错误"))
+		return err
+	}
+	// 判断是否为私聊
 	if message.Type == "chat" {
+		// 判断发送用户是否在线 (在线则用接收方连接写消息给客户端,否则将返回消息给发送方用户不在线)
 		if fromClient, ok := userClient[message.From]; ok {
 			_ = fromClient.WriteMessage(websocket.TextMessage, []byte(message.Data))
 		} else {
@@ -103,7 +114,7 @@ func onMessage(conn *websocket.Conn, msgType int, data string) (err error) {
 	} else {
 		err = conn.WriteMessage(msgType, []byte(data))
 	}
-	return
+	return nil
 }
 
 // 连接断开
