@@ -89,11 +89,10 @@ func onMessage(conn *websocket.Conn, msgType int, data string) (err error) {
 	var message Message
 	_ = system.JsonToStruct(data, &message)
 	if message.Type == "chat" {
-		from := message.From
-		if fromClient, ok := userClient[from]; ok {
+		if fromClient, ok := userClient[message.From]; ok {
 			_ = fromClient.WriteMessage(websocket.TextMessage, []byte("connId不存在"))
 		} else {
-			_ = conn.WriteMessage(websocket.TextMessage, []byte(from+"不在线"))
+			_ = conn.WriteMessage(websocket.TextMessage, []byte(message.From+"不在线"))
 		}
 	} else {
 		err = conn.WriteMessage(msgType, []byte(data))
