@@ -17,6 +17,7 @@ require (
 	github.com/lestrrat-go/strftime v1.0.3 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5
+	github.com/rs/xid v1.2.1
 	github.com/sirupsen/logrus v1.6.0
 	github.com/tebeka/strftime v0.1.5 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect

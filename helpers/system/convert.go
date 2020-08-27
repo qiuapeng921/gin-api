@@ -7,12 +7,13 @@ import (
 	"reflect"
 )
 
-func JsonToStruct(jsonStr string, Struct struct{}) struct{} {
-	err := json.Unmarshal([]byte(jsonStr), &Struct)
+func JsonToStruct(jsonStr string, obj interface{}) error {
+	err := json.Unmarshal([]byte(jsonStr), &obj)
 	if err != nil {
 		fmt.Println(err)
+		return err
 	}
-	return Struct
+	return nil
 }
 
 //struct转json
