@@ -13,7 +13,7 @@ func InitAdminRouter(router *gin.Engine) {
 	{
 		// 权限验证中间件
 		adminGroup.Use(middleware.AdminAuth())
-		adminGroup.POST("/detail", admin.Login)
+		adminGroup.POST("/detail", admin.Detail)
 		roleGroup := adminGroup.Group("/role")
 		{
 			roleGroup.POST("/list", admin.RoleList)

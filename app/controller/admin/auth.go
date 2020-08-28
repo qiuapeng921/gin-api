@@ -56,3 +56,19 @@ func Login(ctx *gin.Context) {
 	})
 	return
 }
+
+func Detail(ctx *gin.Context) {
+	token := ctx.Request.Header.Get("token")
+	user, err := jwt.ParseToken(token)
+	if err != nil {
+		response.Context(ctx).Error(10000, err.Error())
+		return
+	}
+	result, resErr := admins.GetAdminById(int(user.Id))
+	if resErr != nil {
+		response.Context(ctx).Error(10001, resErr.Error())
+		return
+	}
+	response.Context(ctx).Success(result)
+	return
+}
