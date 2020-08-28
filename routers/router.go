@@ -3,6 +3,7 @@ package routers
 import (
 	"gin-api/app/controller"
 	"gin-api/app/middleware"
+	"gin-api/app/socket"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,7 +18,7 @@ func SetupRouter(router *gin.Engine) {
 	)
 
 	router.GET("/", controller.Index)
-	router.GET("/ws", controller.WebSocketHandler)
+	router.GET("/ws", socket.Handler)
 
 	// 加载后台路由组
 	InitAdminRouter(router)
