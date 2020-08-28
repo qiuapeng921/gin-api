@@ -14,7 +14,7 @@ type loginRequest struct {
 	Password string `json:"password" form:"password" binding:"required"`
 }
 
-func UserRegister(c *gin.Context) {
+func Register(c *gin.Context) {
 	var request loginRequest
 	if err := c.ShouldBind(&request); err != nil {
 		response.Context(c).Error(10000, err.Error())
@@ -41,7 +41,7 @@ func UserRegister(c *gin.Context) {
 	return
 }
 
-func UserLogin(c *gin.Context) {
+func Login(c *gin.Context) {
 	var request loginRequest
 	if err := c.ShouldBind(&request); err != nil {
 		response.Context(c).Error(10000, err.Error())

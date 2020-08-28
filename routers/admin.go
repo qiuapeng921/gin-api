@@ -8,10 +8,11 @@ import (
 
 // 后台路由组
 func InitAdminRouter(router *gin.Engine) {
-	router.POST("/admin/login", admin.Login)
 	adminGroup := router.Group("/admin")
 	{
-		// 权限验证中间件
+		adminGroup.POST("/admin/login", admin.Login)
+
+		// 权限验证中间件 中间件上面的不做token验证
 		adminGroup.Use(middleware.AdminAuth())
 		adminGroup.POST("/detail", admin.Detail)
 		roleGroup := adminGroup.Group("/role")

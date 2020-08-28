@@ -7,10 +7,10 @@ import (
 	"time"
 )
 
-func AdminAuth() gin.HandlerFunc {
+func ApiAuth() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		uri := ctx.Request.URL.Path
-		if uri != "/admin/login" {
+		if uri != "/api/login" {
 			token := ctx.Request.Header.Get("token")
 			if token == "" {
 				response.Context(ctx).Error(20000, "token不能为空")
@@ -25,7 +25,7 @@ func AdminAuth() gin.HandlerFunc {
 				response.Context(ctx).Error(20002, "token过期")
 				return
 			}
-			if result.Category != "admin" {
+			if result.Category != "api" {
 				response.Context(ctx).Error(20003, "token类型错误")
 				return
 			}
