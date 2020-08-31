@@ -20,6 +20,8 @@ var wsUpGrader = websocket.Upgrader{
 	},
 }
 
+var socket service.UserClient
+
 // 循环处理消息数据
 func Handler(c *gin.Context) {
 	conn, err := onOpen(c)
@@ -64,8 +66,7 @@ func onOpen(c *gin.Context) (conn *websocket.Conn, err error) {
 		_ = conn.Close()
 		c.Abort()
 	}
-
-	service.BindUser(user, conn)
+	socket.BindUser(user, conn)
 
 	_ = conn.WriteMessage(websocket.TextMessage, []byte("welcome"))
 	return
@@ -82,7 +83,7 @@ func onMessage(conn *websocket.Conn, msgType int, data string) (err error) {
 	// 判断是否为私聊
 	if message.Type == "chat" {
 		// 判断发送用户是否在线 (在线则用接收方连接写消息给客户端,否则将返回消息给发送方用户不在线)
-		if fromClient, err := service.GetUser(message.From); err == nil {
+		if fromClient, err := socket.GetUser(message.From); err == nil {
 			_ = fromClient.WriteMessage(websocket.TextMessage, []byte(message.Data))
 		} else {
 			_ = conn.WriteMessage(websocket.TextMessage, []byte(message.From+"不在线"))
@@ -95,6 +96,5 @@ func onMessage(conn *websocket.Conn, msgType int, data string) (err error) {
 
 // 连接断开
 func onClone(conn *websocket.Conn) {
-	//userConn := service.UserConn{}
-	service.RemoveUser(conn)
+	socket.RemoveUser(conn)
 }
