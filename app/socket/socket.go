@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -19,8 +20,6 @@ var wsUpGrader = websocket.Upgrader{
 		return true
 	},
 }
-
-var socket service.UserClient
 
 // 循环处理消息数据
 func Handler(c *gin.Context) {
@@ -60,13 +59,15 @@ func onOpen(c *gin.Context) (conn *websocket.Conn, err error) {
 		return
 	}
 
-	user := c.Query("user")
-	if user == "" {
+	queryId := c.Query("id")
+	if queryId == "" {
 		_ = conn.WriteMessage(websocket.TextMessage, []byte("user[不能为空]"))
 		_ = conn.Close()
 		c.Abort()
+		return
 	}
-	socket.BindUser(user, conn)
+	userId, _ := strconv.Atoi(queryId)
+	service.GetClient().BindUser(userId, conn)
 
 	_ = conn.WriteMessage(websocket.TextMessage, []byte("welcome"))
 	return
@@ -82,8 +83,8 @@ func onMessage(conn *websocket.Conn, msgType int, data string) (err error) {
 	}
 
 	switch message.ChatType {
-	case "chat":
-		socket.SendToUser(message.Sender, message.Data)
+	case "user":
+		service.GetClient().SendToUser(message.Receive, message.Data)
 		break
 	case "group":
 		break
@@ -96,5 +97,5 @@ func onMessage(conn *websocket.Conn, msgType int, data string) (err error) {
 
 // 连接断开
 func onClone(conn *websocket.Conn) {
-	socket.RemoveUser(conn)
+	service.GetClient().RemoveUser(conn)
 }

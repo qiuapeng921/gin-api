@@ -4,45 +4,51 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gorilla/websocket"
-	"github.com/sirupsen/logrus"
+	"log"
 	"sync"
 )
+
+var socket UserClient
+
+func GetClient() *UserClient {
+	return &socket
+}
 
 // Message 消息结构体
 type Message struct {
 	ChatType string `json:"chat_type"`
 	Data     string `json:"data"`
-	Sender   string    `json:"sender"`
+	Receive  int    `json:"receive"`
 }
 
 type UserClient struct {
 	mutex sync.RWMutex
 	// 绑定用户连接
-	userClient map[string]*websocket.Conn
+	userClient map[int]*websocket.Conn
 	// 连接绑定用户
-	clientUser map[*websocket.Conn]string
+	clientUser map[*websocket.Conn]int
 }
 
 // 绑定用户连接
-func (u *UserClient) BindUser(user string, conn *websocket.Conn) {
+func (u *UserClient) BindUser(userId int, conn *websocket.Conn) {
 	u.mutex.Lock()
 	if u.userClient == nil {
-		u.userClient = make(map[string]*websocket.Conn)
-		u.clientUser = make(map[*websocket.Conn]string)
+		u.userClient = make(map[int]*websocket.Conn)
+		u.clientUser = make(map[*websocket.Conn]int)
 	}
 
 	// 判断用户是否在线 在线则推送下线通知
-	if beforeUser, ok := u.userClient[user]; ok {
+	if beforeUser, ok := u.userClient[userId]; ok {
 		_ = beforeUser.WriteMessage(websocket.TextMessage, []byte("别处登录"))
 		_ = beforeUser.Close()
 	}
 	if len(u.userClient) > 0 {
 		for _, client := range u.userClient {
-			_ = client.WriteMessage(1, []byte(user+"上线啦"))
+			_ = client.WriteMessage(1, []byte(fmt.Sprintf("%d 上线啦", userId)))
 		}
 	}
-	u.userClient[user] = conn
-	u.clientUser[conn] = user
+	u.userClient[userId] = conn
+	u.clientUser[conn] = userId
 	fmt.Println("=============上线打印================")
 	fmt.Println("=============userClient================", u.userClient)
 	fmt.Println("=============clientUser================", u.clientUser)
@@ -50,10 +56,10 @@ func (u *UserClient) BindUser(user string, conn *websocket.Conn) {
 }
 
 // 获取指定用户的连接
-func (u *UserClient) GetUser(user string) (conn *websocket.Conn, err error) {
+func (u *UserClient) GetUser(userId int) (conn *websocket.Conn, err error) {
 	var ok bool
-	if conn, ok = u.userClient[user]; !ok {
-		err = errors.New(user + "不存在")
+	if conn, ok = u.userClient[userId]; !ok {
+		err = errors.New(fmt.Sprintf("%d 不存在", userId))
 		return nil, err
 	}
 	return conn, nil
@@ -62,26 +68,26 @@ func (u *UserClient) GetUser(user string) (conn *websocket.Conn, err error) {
 // 删除用户绑定的链接
 func (u *UserClient) RemoveUser(conn *websocket.Conn) {
 	u.mutex.Lock()
-	if user, ok := u.clientUser[conn]; ok {
-		delete(u.userClient, user)
+	if userId, ok := u.clientUser[conn]; ok {
+		delete(u.userClient, userId)
 		delete(u.clientUser, conn)
 		fmt.Println("=============下线打印================")
 		fmt.Println("=============userClient================", u.userClient)
 		fmt.Println("=============clientUser================", u.clientUser)
 		for _, client := range u.userClient {
-			_ = client.WriteMessage(1, []byte(user+"下线啦"))
+			_ = client.WriteMessage(1, []byte(fmt.Sprintf("%d 下线啦", userId)))
 		}
 	} else {
-		fmt.Println(user + "不存在")
+		fmt.Println(fmt.Sprintf("%d 不在线", userId))
 	}
 	u.mutex.Unlock()
 }
 
-func (u *UserClient) SendToUser(userId string, message string) bool {
+func (u *UserClient) SendToUser(userId int, message string) bool {
 	u.mutex.Lock()
 	if client, ok := u.userClient[userId]; ok {
 		if err := client.WriteMessage(websocket.TextMessage, []byte(message)); err != nil {
-			logrus.Println("发送消息给【" + userId + "】失败" + err.Error())
+			log.Printf("发送消息给 %d ,错误信息：%s", userId, err.Error())
 			return false
 		}
 	}
@@ -90,7 +96,7 @@ func (u *UserClient) SendToUser(userId string, message string) bool {
 }
 
 // 发送消息给指定的用户
-func (u *UserClient) SendToSomeUser(userIds []string, message string) {
+func (u *UserClient) SendToSomeUser(userIds []int, message string) {
 	for _, userId := range userIds {
 		if _, ok := u.userClient[userId]; !ok {
 			continue
@@ -102,6 +108,7 @@ func (u *UserClient) SendToSomeUser(userIds []string, message string) {
 // 发送消息到群组
 func (u *UserClient) SendToGroup(groupId int, message string) bool {
 	u.mutex.Lock()
+
 	u.mutex.Unlock()
 	return true
 }
