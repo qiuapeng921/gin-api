@@ -2,7 +2,7 @@ package menus
 
 // Entity is the golang structure for table menus.
 type Entity struct {
-	Id        int    `xorm:"not null pk autoincr comment('主键id') INT(10)" json:"id"`
+	Id        int    `xorm:"not null pk autoincr comment('菜单表') INT(10)" json:"id"`
 	Name      string `xorm:"not null default '' comment('菜单名') index VARCHAR(20)" json:"name"`
 	Url       string `xorm:"not null default '' comment('地址') VARCHAR(50)" json:"url"`
 	Identify  string `xorm:"not null default '' comment('标识') VARCHAR(20)" json:"identify"`

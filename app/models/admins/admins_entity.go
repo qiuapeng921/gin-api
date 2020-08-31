@@ -2,7 +2,7 @@ package admins
 
 // Entity is the golang structure for table admins.
 type Entity struct {
-	Id        int    `xorm:"not null pk autoincr comment('用户id') INT(10)" json:"id"`
+	Id        int    `xorm:"not null pk autoincr comment('管理员表') INT(10)" json:"id"`
 	Username  string `xorm:"not null default '' comment('用户名') VARCHAR(30)" json:"username"`
 	Password  string `xorm:"not null default '' comment('密码') VARCHAR(100)" json:"password"`
 	Phone     string `xorm:"default '' comment('手机号') CHAR(11)" json:"phone"`

@@ -4,17 +4,20 @@ import (
 	"fmt"
 	"gin-api/app/models/admin_role"
 	"gin-api/app/models/admins"
-	"gin-api/app/models/article_tags"
-	"gin-api/app/models/articles"
-	"gin-api/app/models/categorys"
-	"gin-api/app/models/comments"
 	"gin-api/app/models/menus"
 	"gin-api/app/models/permissions"
 	"gin-api/app/models/role_permission"
 	"gin-api/app/models/roles"
 	"gin-api/app/models/system_config"
-	"gin-api/app/models/tags"
+	"gin-api/app/models/user_apply"
 	"gin-api/app/models/user_behavior"
+	"gin-api/app/models/user_friend"
+	"gin-api/app/models/user_friend_record"
+	"gin-api/app/models/user_group"
+	"gin-api/app/models/user_group_member"
+	"gin-api/app/models/user_group_record"
+	"gin-api/app/models/user_message"
+	"gin-api/app/models/user_record"
 	"gin-api/app/models/users"
 	"gin-api/helpers/db"
 	"gin-api/helpers/system"
@@ -28,18 +31,21 @@ func AutoGenTable() {
 	_ = orm.Sync2(
 		&admins.Entity{},
 		&admin_role.Entity{},
-		&articles.Entity{},
-		&article_tags.Entity{},
-		&categorys.Entity{},
-		&comments.Entity{},
 		&menus.Entity{},
 		&permissions.Entity{},
 		&roles.Entity{},
 		&role_permission.Entity{},
 		&system_config.Entity{},
-		&tags.Entity{},
 		&users.Entity{},
 		&user_behavior.Entity{},
+		&user_apply.Entity{},
+		&user_friend.Entity{},
+		&user_friend_record.Entity{},
+		&user_group.Entity{},
+		&user_group_member.Entity{},
+		&user_group_record.Entity{},
+		&user_message.Entity{},
+		&user_record.Entity{},
 	)
 
 	if result, _ := db.Xorm().IsTableEmpty(&admins.Entity{}); result {
