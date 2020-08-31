@@ -19,5 +19,17 @@ func InitApiRouter(router *gin.Engine) {
 		{
 			userGroup.POST("/detail", api.Detail)
 		}
+		friendGroup := apiGroup.Group("/friend")
+		{
+			friendGroup.POST("/create", api.CreateFriend)
+			friendGroup.POST("/delete", api.DeleteFriend)
+		}
+		group := apiGroup.Group("/group")
+		{
+			group.POST("/create", api.CreateGroup)
+			group.POST("/join", api.JoinGroup)
+			group.POST("/remove", api.RemoveGroup)
+			group.POST("/delete", api.DeleteGroup)
+		}
 	}
 }

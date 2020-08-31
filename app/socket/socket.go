@@ -80,16 +80,16 @@ func onMessage(conn *websocket.Conn, msgType int, data string) (err error) {
 		_ = conn.WriteMessage(websocket.TextMessage, []byte("消息体格式错误"))
 		return err
 	}
-	// 判断是否为私聊
-	if message.Type == "chat" {
-		// 判断发送用户是否在线 (在线则用接收方连接写消息给客户端,否则将返回消息给发送方用户不在线)
-		if fromClient, err := socket.GetUser(message.From); err == nil {
-			_ = fromClient.WriteMessage(websocket.TextMessage, []byte(message.Data))
-		} else {
-			_ = conn.WriteMessage(websocket.TextMessage, []byte(message.From+"不在线"))
-		}
-	} else {
+
+	switch message.ChatType {
+	case "chat":
+		socket.SendToUser(message.Sender, message.Data)
+		break
+	case "group":
+		break
+	default:
 		err = conn.WriteMessage(msgType, []byte(data))
+		break
 	}
 	return nil
 }

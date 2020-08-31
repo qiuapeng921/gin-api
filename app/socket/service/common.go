@@ -4,16 +4,16 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gorilla/websocket"
+	"github.com/sirupsen/logrus"
 	"sync"
 )
 
 // Message 消息结构体
 type Message struct {
-	Type string `json:"type"`
-	Data string `json:"data"`
-	From string `json:"from"`
+	ChatType string `json:"chat_type"`
+	Data     string `json:"data"`
+	Sender   string    `json:"sender"`
 }
-
 
 type UserClient struct {
 	mutex sync.RWMutex
@@ -75,4 +75,33 @@ func (u *UserClient) RemoveUser(conn *websocket.Conn) {
 		fmt.Println(user + "不存在")
 	}
 	u.mutex.Unlock()
+}
+
+func (u *UserClient) SendToUser(userId string, message string) bool {
+	u.mutex.Lock()
+	if client, ok := u.userClient[userId]; ok {
+		if err := client.WriteMessage(websocket.TextMessage, []byte(message)); err != nil {
+			logrus.Println("发送消息给【" + userId + "】失败" + err.Error())
+			return false
+		}
+	}
+	u.mutex.Unlock()
+	return true
+}
+
+// 发送消息给指定的用户
+func (u *UserClient) SendToSomeUser(userIds []string, message string) {
+	for _, userId := range userIds {
+		if _, ok := u.userClient[userId]; !ok {
+			continue
+		}
+		u.SendToUser(userId, message)
+	}
+}
+
+// 发送消息到群组
+func (u *UserClient) SendToGroup(groupId int, message string) bool {
+	u.mutex.Lock()
+	u.mutex.Unlock()
+	return true
 }
