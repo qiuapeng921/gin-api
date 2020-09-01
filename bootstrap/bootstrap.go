@@ -91,5 +91,5 @@ func welcome(endPoint string) {
 	fmt.Println(fmt.Sprintf("System      Name:     %s", runtime.GOOS))
 	fmt.Println(fmt.Sprintf("Go          Version:  %s", runtime.Version()[2:]))
 	fmt.Println(fmt.Sprintf("Gin         Version:  %s", gin.Version))
-	fmt.Println(fmt.Sprintf("Listen      Addr:     %s", endPoint))
+	fmt.Println(fmt.Sprintf("Listen      Address:  %s", endPoint))
 }

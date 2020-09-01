@@ -10,7 +10,7 @@ import (
 	"github.com/rifflock/lfshook"
 	"github.com/sirupsen/logrus"
 	"os"
-	"path"
+	"path/filepath"
 	"strconv"
 	"time"
 )
@@ -31,14 +31,19 @@ func (w bodyLogWriter) WriteString(s string) (int, error) {
 
 // 日志记录到文件
 func RequestLog() gin.HandlerFunc {
-	logFilePath := os.Getenv("LOG_FILE_PATH")
-	logFileName := os.Getenv("LOG_FILE_NAME")
 
-	// 日志文件
-	fileName := path.Join(logFilePath, logFileName)
+	folderName := time.Now().Format("2006_01_02_15")
+	folderPath := filepath.Join(os.Getenv("LOG_FILE_PATH"), folderName)
 
+	if _, err := os.Stat(folderPath); os.IsNotExist(err) {
+		if err := os.MkdirAll(folderPath, 0777); err != nil {
+			fmt.Println("创建目录失败:", err.Error())
+		}
+	}
+
+	logName := folderPath + "/request.log"
 	// 写入文件
-	src, err := os.OpenFile(fileName, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
+	src, err := os.OpenFile(logName, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
 	if err != nil {
 		fmt.Println("err", err)
 	}
@@ -52,9 +57,7 @@ func RequestLog() gin.HandlerFunc {
 	// 设置 logs
 	logWriter, err := logs.New(
 		// 分割后的文件名称
-		fileName+".%Y%m%d.log",
-		// 生成软链，指向最新日志文件
-		//logs.WithLinkName(fileName),
+		logName,
 		// 设置最大保存时间(7天)
 		logs.WithMaxAge(7*24*time.Hour),
 		// 设置日志切割时间间隔(1天)
@@ -145,4 +148,3 @@ func LoggerToMQ() gin.HandlerFunc {
 	return func(c *gin.Context) {
 	}
 }
-
