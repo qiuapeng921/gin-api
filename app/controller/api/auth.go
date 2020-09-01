@@ -32,7 +32,7 @@ func Register(c *gin.Context) {
 	}
 	result.Username = request.Username
 	result.Password = system.EncodeMD5(request.Username)
-	insertId, insertErr := db.Xorm().InsertOne(result)
+	insertId, insertErr := db.OrmClient().InsertOne(result)
 	if insertErr != nil {
 		response.Context(c).Error(10002, "用户注册失败"+insertErr.Error())
 		return

@@ -35,7 +35,7 @@ func RoleCreate(ctx *gin.Context) {
 	roleModel.RoleDesc = request.RoleDesc
 	roleModel.Status = request.Status
 
-	_, err := db.Xorm().InsertOne(&roleModel)
+	_, err := db.OrmClient().InsertOne(&roleModel)
 	if err != nil {
 		response.Context(ctx).Error(10001, err.Error())
 		return
@@ -73,7 +73,7 @@ func RoleUpdate(ctx *gin.Context) {
 	roleModel.RoleDesc = request.RoleDesc
 	roleModel.Status = request.Status
 
-	_, err := db.Xorm().ID(id).Update(&roleModel)
+	_, err := db.OrmClient().ID(id).Update(&roleModel)
 	if err != nil {
 		response.Context(ctx).Error(10001, err.Error())
 		return
@@ -86,7 +86,7 @@ func RoleDelete(ctx *gin.Context) {
 	queryId := ctx.Query("id")
 	id, _ := strconv.Atoi(queryId)
 	var role roles.Entity
-	roleInfo, err := db.Xorm().ID(id).Get(&role)
+	roleInfo, err := db.OrmClient().ID(id).Get(&role)
 	if err != nil {
 		response.Context(ctx).Error(10000, "获取数据错误"+err.Error())
 		return
@@ -95,7 +95,7 @@ func RoleDelete(ctx *gin.Context) {
 		response.Context(ctx).Error(10001, "数据不存在")
 		return
 	}
-	result, delErr := db.Xorm().ID(id).Delete(&role)
+	result, delErr := db.OrmClient().ID(id).Delete(&role)
 	if delErr != nil {
 		response.Context(ctx).Error(10002, "删除数据失败")
 		return

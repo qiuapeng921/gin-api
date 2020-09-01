@@ -32,7 +32,7 @@ func (w bodyLogWriter) WriteString(s string) (int, error) {
 // 日志记录到文件
 func RequestLog() gin.HandlerFunc {
 
-	folderName := time.Now().Format("2006_01_02_15")
+	folderName := time.Now().Format("2006_01_02")
 	folderPath := filepath.Join(os.Getenv("LOG_FILE_PATH"), folderName)
 
 	if _, err := os.Stat(folderPath); os.IsNotExist(err) {
@@ -41,7 +41,7 @@ func RequestLog() gin.HandlerFunc {
 		}
 	}
 
-	logName := folderPath + "/request.log"
+	logName := fmt.Sprintf("%s/%s.log",folderPath , time.Now().Format("2006_01_02_15"))
 	// 写入文件
 	src, err := os.OpenFile(logName, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
 	if err != nil {

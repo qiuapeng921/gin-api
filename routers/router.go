@@ -4,12 +4,12 @@ import (
 	"gin-api/app/controller"
 	"gin-api/app/middleware"
 	"gin-api/app/socket"
+	"gin-api/helpers/templates"
 	"github.com/gin-gonic/gin"
 )
 
 func SetupRouter(router *gin.Engine) {
-	router.LoadHTMLGlob("templates/*")
-	router.StaticFile("/favicon.ico", "./public/favicon.ico")
+	templates.InitTemplate(router)
 
 	router.Use(
 		middleware.RequestLog(),

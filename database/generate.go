@@ -27,7 +27,7 @@ import (
 var orm *xorm.Engine
 
 func AutoGenTable() {
-	orm = db.Xorm()
+	orm = db.OrmClient()
 	_ = orm.Sync2(
 		&admins.Entity{},
 		&admin_role.Entity{},
@@ -48,7 +48,7 @@ func AutoGenTable() {
 		&user_record.Entity{},
 	)
 
-	if result, _ := db.Xorm().IsTableEmpty(&admins.Entity{}); result {
+	if result, _ := orm.IsTableEmpty(&admins.Entity{}); result {
 		defaultData()
 	}
 }

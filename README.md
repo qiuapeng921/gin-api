@@ -27,7 +27,7 @@ DB_MAX_IDLE=20
 DB_MAX_OPEN=100
 
 REDIS_HOST=127.0.0.1:6379
-REDIS_PASSWORD=null
+REDIS_PASSWORD=
 REDIS_MAX_IDLE=50
 REDIS_MAX_ACTIVE=1200
 
@@ -38,3 +38,8 @@ go run main.go
 - Gin
 - Xorm
 - Redis
+- Mongo
+- ElasticSearch
+- RabbitMq
+- Socket
+- Templates

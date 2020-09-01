@@ -10,7 +10,7 @@ import (
 
 var redisClient *redis.Client
 
-func SetupRedis() *redis.Client {
+func InitRedis() *redis.Client {
 	Address := os.Getenv("REDIS_HOST")
 	Password := os.Getenv("REDIS_PASSWORD")
 	Idle, _ := strconv.Atoi(os.Getenv("MAX_IDLE"))
@@ -31,6 +31,6 @@ func SetupRedis() *redis.Client {
 	return redisClient
 }
 
-func Redis() *redis.Client {
+func RedisClient() *redis.Client {
 	return redisClient
 }

@@ -7,6 +7,7 @@ import (
 	"reflect"
 )
 
+// json转struct
 func JsonToStruct(jsonStr string, obj interface{}) error {
 	err := json.Unmarshal([]byte(jsonStr), &obj)
 	if err != nil {
@@ -16,7 +17,7 @@ func JsonToStruct(jsonStr string, obj interface{}) error {
 	return nil
 }
 
-//struct转json
+// struct转json
 func StructToJson(Struct struct{}) {
 	jsonBytes, err := json.Marshal(Struct)
 	if err != nil {
@@ -25,7 +26,7 @@ func StructToJson(Struct struct{}) {
 	fmt.Println(string(jsonBytes))
 }
 
-//json转map
+// json转map
 func JsonToMap(jsonStr string) (result map[string]interface{}) {
 	err := json.Unmarshal([]byte(jsonStr), &result)
 	if err != nil {
@@ -34,7 +35,7 @@ func JsonToMap(jsonStr string) (result map[string]interface{}) {
 	return result
 }
 
-//map转json
+// map转json
 func MapToJson(instance map[string]interface{}) string {
 	jsonStr, err := json.Marshal(instance)
 	if err != nil {
@@ -43,7 +44,7 @@ func MapToJson(instance map[string]interface{}) string {
 	return string(jsonStr)
 }
 
-//map转struct
+// map转struct
 func MapToStruct(instance map[string]interface{}, people struct{}) struct{} {
 	err := mapstructure.Decode(instance, &people)
 	if err != nil {
@@ -52,7 +53,7 @@ func MapToStruct(instance map[string]interface{}, people struct{}) struct{} {
 	return people
 }
 
-//struct转map
+// struct转map
 func StructToMap(obj interface{}) map[string]interface{} {
 	objType := reflect.TypeOf(obj)
 	objValue := reflect.ValueOf(obj)

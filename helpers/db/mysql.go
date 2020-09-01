@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"os"
 	"strconv"
@@ -11,7 +12,7 @@ import (
 
 var mysqlClient *xorm.Engine
 
-func SetUpXorm() {
+func InitXorm() {
 	database := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=True&loc=Local",
 		os.Getenv("DB_USERNAME"),
 		os.Getenv("DB_PASSWORD"),
@@ -21,7 +22,7 @@ func SetUpXorm() {
 	var err error
 	mysqlClient, err = xorm.NewEngine("mysql", database)
 	if err != nil {
-		panic(err.Error())
+		panic(fmt.Sprintf("初始化数据库失败 错误信息:%s", err.Error()))
 	}
 	maxIdle, _ := strconv.Atoi(os.Getenv("DB_MAX_IDLE"))
 	maxOpen, _ := strconv.Atoi(os.Getenv("DB_MAX_OPEN"))
@@ -29,11 +30,13 @@ func SetUpXorm() {
 	mysqlClient.SetMaxOpenConns(maxOpen)
 	fmt.Println("mysql连接成功")
 
-	mysqlClient.ShowSQL(false)
-	mysqlClient.Logger().SetLevel(log.LOG_DEBUG)
-
+	show := os.Getenv("APP_ENV")
+	if show == gin.DebugMode {
+		mysqlClient.ShowSQL(true)
+		mysqlClient.Logger().SetLevel(log.LOG_DEBUG)
+	}
 }
 
-func Xorm() *xorm.Engine {
+func OrmClient() *xorm.Engine {
 	return mysqlClient
 }

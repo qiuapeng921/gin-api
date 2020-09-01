@@ -40,7 +40,7 @@ func CreateAdmin(ctx *gin.Context) {
 	var admin admins.Entity
 
 	// 判断用户是否存在
-	if adminCount, _ := db.Xorm().Where("username=?", request.Username).Count(&admin); adminCount > 0 {
+	if adminCount, _ := db.OrmClient().Where("username=?", request.Username).Count(&admin); adminCount > 0 {
 		response.Context(ctx).Error(10001, "用户"+request.Username+"已存在")
 		return
 	}
@@ -50,7 +50,7 @@ func CreateAdmin(ctx *gin.Context) {
 	admin.Phone = request.Phone
 
 	// 开启一个事物管道
-	session := db.Xorm().NewSession()
+	session := db.OrmClient().NewSession()
 	defer session.Close()
 
 	// 开启事务
@@ -60,7 +60,7 @@ func CreateAdmin(ctx *gin.Context) {
 	}
 
 	// 添加管理员
-	_, err = db.Xorm().Insert(&admin)
+	_, err = db.OrmClient().Insert(&admin)
 	if err != nil {
 		session.Rollback()
 		response.Context(ctx).Error(10003, "添加管理员失败:"+err.Error())
@@ -98,7 +98,7 @@ func UpdateAdmin(ctx *gin.Context) {
 	)
 
 	// 判断用户是否存在
-	_, _ = db.Xorm().Where("id=?", id).Get(&admin)
+	_, _ = db.OrmClient().Where("id=?", id).Get(&admin)
 	if admin.Id == 0 {
 		response.Context(ctx).Error(10001, "用户"+queryId+"不存在")
 		return
@@ -111,7 +111,7 @@ func UpdateAdmin(ctx *gin.Context) {
 
 	if request.Username != admin.Username {
 		fmt.Println(request, admin)
-		_, err := db.Xorm().Where("id=?", id).Count(&admin)
+		_, err := db.OrmClient().Where("id=?", id).Count(&admin)
 		if err != nil {
 			response.Context(ctx).Error(10003, err.Error())
 			return
@@ -123,7 +123,7 @@ func UpdateAdmin(ctx *gin.Context) {
 		}
 	}
 
-	session := db.Xorm().NewSession()
+	session := db.OrmClient().NewSession()
 	defer session.Close()
 
 	// 开启事务

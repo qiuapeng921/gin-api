@@ -3,8 +3,6 @@ package bootstrap
 import (
 	"context"
 	"fmt"
-	"gin-api/database"
-	"gin-api/helpers/db"
 	"gin-api/routers"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -12,8 +10,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"runtime"
-	"strings"
 	"time"
 )
 
@@ -22,11 +18,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	db.SetUpXorm()
-	db.SetupRedis()
-
-	// 自动创建数据表
-	database.AutoGenTable()
+	Init()
 }
 
 func Run() {
@@ -72,24 +64,4 @@ func Run() {
 		log.Fatal("服务关闭错误:", err.Error())
 	}
 	log.Println("服务已关闭")
-}
-
-const logo = `
- _____ _          ___        _ 
-|  __ (_)        / _ \      (_)
-| |  \/_ _ __   / /_\ \_ __  _ 
-| | __| | '_ \  |  _  | '_ \| |
-| |_\ \ | | | | | | | | |_) | |
- \____/_|_| |_| \_| |_/ .__/|_|
-                      | |      
-                      |_|      `
-
-func welcome(endPoint string) {
-	fmt.Println(strings.Replace(logo, "*", "`", -1))
-	fmt.Println("")
-	fmt.Println(fmt.Sprintf("Server      Name:     %s", os.Getenv("APP_NAME")))
-	fmt.Println(fmt.Sprintf("System      Name:     %s", runtime.GOOS))
-	fmt.Println(fmt.Sprintf("Go          Version:  %s", runtime.Version()[2:]))
-	fmt.Println(fmt.Sprintf("Gin         Version:  %s", gin.Version))
-	fmt.Println(fmt.Sprintf("Listen      Address:  %s", endPoint))
 }

@@ -35,10 +35,11 @@ func Login(ctx *gin.Context) {
 		response.Context(ctx).Error(10003, "密码错误")
 		return
 	}
+
 	token, expiresAt, genTokenErr := jwt.GenerateToken(uint(result.Id), result.Username, "admin")
 	tokenExpiresAt := time.Now().Unix()
 
-	_, cacheErr := db.Redis().Set("admin_token:"+result.Username, token, time.Duration(expiresAt-tokenExpiresAt)*time.Second).Result()
+	_, cacheErr := db.RedisClient().Set("admin_token:"+result.Username, token, time.Duration(expiresAt-tokenExpiresAt)*time.Second).Result()
 	if cacheErr != nil {
 		response.Context(ctx).Error(10003, "cache err"+cacheErr.Error())
 		return
