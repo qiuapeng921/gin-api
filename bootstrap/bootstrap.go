@@ -13,7 +13,7 @@ import (
 	"os"
 	"os/signal"
 	"runtime"
-	"syscall"
+	"strings"
 	"time"
 )
 
@@ -58,11 +58,7 @@ func Run() {
 
 	}()
 
-	startLogo()
-	fmt.Println("访问地址:" + "http://" + endPoint)
-	fmt.Println("进程Id:", syscall.Getpid())
-	fmt.Println("goVersion:", runtime.Version())
-	fmt.Println("ginVersion:", gin.Version)
+	welcome("http://"+endPoint)
 
 	// 等待中断信号以优雅地关闭服务器（设置 5 秒的超时时间）
 	quit := make(chan os.Signal)
@@ -78,8 +74,7 @@ func Run() {
 	log.Println("服务已关闭")
 }
 
-func startLogo() {
-	logo := `
+const logo = `
  _____ _          ___        _ 
 |  __ (_)        / _ \      (_)
 | |  \/_ _ __   / /_\ \_ __  _ 
@@ -88,5 +83,13 @@ func startLogo() {
  \____/_|_| |_| \_| |_/ .__/|_|
                       | |      
                       |_|      `
-	fmt.Println(logo)
+
+func welcome(endPoint string) {
+	fmt.Println(strings.Replace(logo, "*", "`", -1))
+	fmt.Println("")
+	fmt.Println(fmt.Sprintf("Server      Name:     %s", os.Getenv("APP_NAME")))
+	fmt.Println(fmt.Sprintf("System      Name:     %s", runtime.GOOS))
+	fmt.Println(fmt.Sprintf("Go          Version:  %s", runtime.Version()[2:]))
+	fmt.Println(fmt.Sprintf("Gin         Version:  %s", gin.Version))
+	fmt.Println(fmt.Sprintf("Listen      Addr:     %s", endPoint))
 }
