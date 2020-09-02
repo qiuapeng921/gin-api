@@ -18,7 +18,8 @@ func init() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	Init()
+	// 初始化所有工具类
+	InitTool()
 }
 
 func Run() {
@@ -50,7 +51,7 @@ func Run() {
 
 	}()
 
-	welcome("http://"+endPoint)
+	welcome("http://" + endPoint)
 
 	// 等待中断信号以优雅地关闭服务器（设置 5 秒的超时时间）
 	quit := make(chan os.Signal)

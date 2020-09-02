@@ -11,6 +11,8 @@ git clone https://gitea.phpswoole.cn/qiuapeng921/gin-api $GOPATH/src/gin-api
 
 - Mysql
 - Redis
+- ElasticSearch
+- RabbitMq
 
 ### 运行
 ```

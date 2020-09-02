@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"gin-api/helpers/db"
 	"gin-api/helpers/response"
+	"gin-api/helpers/system"
 	"github.com/gin-gonic/gin"
 	logs "github.com/lestrrat-go/file-rotatelogs"
 	"github.com/rifflock/lfshook"
@@ -41,7 +43,7 @@ func RequestLog() gin.HandlerFunc {
 		}
 	}
 
-	logName := fmt.Sprintf("%s/%s.log",folderPath , time.Now().Format("2006_01_02_15"))
+	logName := fmt.Sprintf("%s/%s.log", folderPath, time.Now().Format("2006_01_02_15"))
 	// 写入文件
 	src, err := os.OpenFile(logName, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
 	if err != nil {
@@ -111,8 +113,7 @@ func RequestLog() gin.HandlerFunc {
 			_ = c.Request.ParseForm()
 		}
 
-		// 日志格式
-		logger.WithFields(logrus.Fields{
+		fields := logrus.Fields{
 			"request_method":    c.Request.Method,
 			"request_uri":       c.Request.RequestURI,
 			"request_proto":     c.Request.Proto,
@@ -125,9 +126,13 @@ func RequestLog() gin.HandlerFunc {
 			"response_code":        responseCode,
 			"response_msg":         responseMsg,
 			"response_data":        responseData,
+			"cost_time":            endTime.Sub(startTime),
+		}
 
-			"cost_time": endTime.Sub(startTime),
-		}).Info()
+		go db.EsClient.PutData("request", system.MapToJson(fields))
+
+		// 日志格式
+		logger.WithFields(fields).Info()
 	}
 }
 

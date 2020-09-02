@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"gin-api/helpers/db"
 	"gin-api/helpers/response"
 	"gin-api/helpers/system"
 	"github.com/gin-gonic/gin"
-	"io/ioutil"
 	"net/http"
 	"path/filepath"
 	"runtime"
@@ -53,16 +53,17 @@ func HandleException() gin.HandlerFunc {
 
 				message := gin.H{"msgtype": "markdown", "markdown": gin.H{"content": content, "mentioned_list": []string{"@all"}}}
 
+				pushMessage := system.MapToJson(message)
+
+				go db.EsClient.PutData("exception", pushMessage)
+
 				client := &http.Client{}
 				endPoint := "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=e0544aaf-ffa2-4ec0-b3c4-316fb2fcd8b6"
-				req, err := client.Post(endPoint, "application/json", bytes.NewBuffer([]byte(system.MapToJson(message))))
+				_, err := client.Post(endPoint, "application/json", bytes.NewBuffer([]byte(pushMessage)))
 				if err != nil {
 					fmt.Println(err.Error())
 					return
 				}
-				result, _ := ioutil.ReadAll(req.Body)
-				fmt.Println(string(result))
-
 				response.Context(c).String(http.StatusInternalServerError, "系统异常，请联系管理员！")
 				c.Abort()
 			}

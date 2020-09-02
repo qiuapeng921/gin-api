@@ -18,6 +18,8 @@ func SetupRouter(router *gin.Engine) {
 	)
 
 	router.GET("/", controller.Index)
+	router.GET("/es", controller.Elastic)
+	
 	router.GET("/ws", socket.Handler)
 
 	// 加载后台路由组

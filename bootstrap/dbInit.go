@@ -1,18 +1,19 @@
 package bootstrap
 
 import (
+	"gin-api/app/process"
 	"gin-api/database"
 	"gin-api/helpers/db"
-	"gin-api/helpers/queue"
 )
 
-func Init()  {
+func InitTool() {
 	db.InitXorm()
 	db.InitRedis()
-	db.InitMongo()
+	//queue.InitRabbitMq()
+	//db.InitMongo()
 	db.InitElastic()
-	queue.InitRabbitMq()
 	// 自动创建数据表
 	database.AutoGenTable()
 
+	process.InitProcess()
 }
