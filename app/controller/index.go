@@ -13,10 +13,11 @@ func Index(c *gin.Context) {
 
 func Elastic(ctx *gin.Context) {
 	index := ctx.Query("index")
-	query := db.EsClient.Query(index)
-	list := db.EsClient.List(index, map[string]string{"query": "admin1"})
+	query := ctx.Query("query")
+	queryResult := db.EsClient.Query(index)
+	list := db.EsClient.List(index, map[string]string{"query": query})
 	response.Context(ctx).Success(gin.H{
-		"query": query,
+		"query": queryResult,
 		"list":  list,
 	})
 	return
