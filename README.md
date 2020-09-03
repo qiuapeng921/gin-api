@@ -7,6 +7,9 @@ git clone https://gitea.phpswoole.cn/qiuapeng921/gin-api $GOPATH/src/gin-api
 
 ## 如何运行
 
+1. 将请求数据放入rabbit队列中
+2. rabbitmq收集请求队列数据,存入elasticsearch中
+
 ### 必须
 
 - Mysql

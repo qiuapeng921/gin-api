@@ -19,7 +19,6 @@ func InitXorm() {
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_DATABASE"),
 		os.Getenv("DB_CHARSET"))
-	fmt.Println(database)
 	var err error
 	mysqlClient, err = xorm.NewEngine("mysql", database)
 	if err != nil {
@@ -32,13 +31,12 @@ func InitXorm() {
 	maxOpen, _ := strconv.Atoi(os.Getenv("DB_MAX_OPEN"))
 	mysqlClient.SetMaxIdleConns(maxIdle)
 	mysqlClient.SetMaxOpenConns(maxOpen)
-	fmt.Println("mysql连接成功")
-
 	show := os.Getenv("APP_ENV")
 	if show == gin.DebugMode {
 		mysqlClient.ShowSQL(true)
 		mysqlClient.Logger().SetLevel(log.LOG_DEBUG)
 	}
+	fmt.Println("mysql连接成功")
 }
 
 func OrmClient() *xorm.Engine {

@@ -18,8 +18,17 @@ func SetupRouter(router *gin.Engine) {
 	)
 
 	router.GET("/", controller.Index)
-	router.GET("/es", controller.Elastic)
-	
+
+	esGroup := router.Group("/es")
+	{
+		esGroup.GET("/list", controller.SearchList)
+		esGroup.GET("/query", controller.SearchQuery)
+		esGroup.GET("/create", controller.SearchCreate)
+		esGroup.GET("/info", controller.SearchInfo)
+		esGroup.GET("/update", controller.SearchUpdate)
+		esGroup.GET("/delete", controller.SearchDelete)
+	}
+
 	router.GET("/ws", socket.Handler)
 
 	// 加载后台路由组

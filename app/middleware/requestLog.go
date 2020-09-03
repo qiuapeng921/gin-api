@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"gin-api/helpers/db"
+	"gin-api/helpers/queue"
 	"gin-api/helpers/response"
 	"gin-api/helpers/system"
 	"github.com/gin-gonic/gin"
@@ -129,7 +129,7 @@ func RequestLog() gin.HandlerFunc {
 			"cost_time":            endTime.Sub(startTime),
 		}
 
-		go db.EsClient.PutData("request", system.MapToJson(fields))
+		go queue.Publish("request","request", system.MapToJson(fields))
 
 		// 日志格式
 		logger.WithFields(fields).Info()

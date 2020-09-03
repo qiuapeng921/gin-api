@@ -2,12 +2,13 @@ package process
 
 import (
 	"fmt"
+	"gin-api/helpers/db"
 	"gin-api/helpers/queue"
 	"time"
 )
 
 func InitConsume() {
-	channel, message, err := queue.Consumer("test", "test")
+	channel, message, err := queue.Consumer("request", "request")
 	defer channel.Close()
 	if err != nil {
 		fmt.Println("获取队列失败" + err.Error())
@@ -15,7 +16,7 @@ func InitConsume() {
 	for {
 		select {
 		case msg := <-message:
-			fmt.Println("接受", string(msg.Body))
+			go db.EsClient.Insert("request", string(msg.Body))
 			// 确认收到本条消息, multiple必须为false
 			if err := msg.Ack(false); err != nil {
 				fmt.Println("rabbit确认消息失败 错误信息:" + err.Error())

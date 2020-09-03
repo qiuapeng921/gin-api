@@ -64,7 +64,7 @@ func (es *ElasticClient) IsExistsIndex(index string) bool {
 // 往索引添加数据
 // json字符串导入 json = `{"id":"1", "name":"admin"}`
 // struct结构体导入 Task{id: "1", name: "admin"}
-func (es *ElasticClient) PutData(index string, bodyJSON interface{}) bool {
+func (es *ElasticClient) Insert(index string, bodyJSON interface{}) bool {
 	if !es.IsExistsIndex(index) {
 		if !es.CreateIndex(index) {
 			return false
@@ -78,9 +78,31 @@ func (es *ElasticClient) PutData(index string, bodyJSON interface{}) bool {
 	return true
 }
 
+//批量插入
+func (es *ElasticClient) BatchInsert(index string, type_ string, datas ...interface{}) int {
+	if !es.IsExistsIndex(index) {
+		if !es.CreateIndex(index) {
+			return 0
+		}
+	}
+	bulkRequest := es.EsCon.Bulk()
+	for i, data := range datas {
+		doc := elastic.NewBulkIndexRequest().Index(index).Type(type_).Id(strconv.Itoa(i)).Doc(data)
+		bulkRequest = bulkRequest.Add(doc)
+	}
+
+	response, err := bulkRequest.Do(context.TODO())
+	if err != nil {
+		panic(err)
+	}
+	failed := response.Failed()
+	iter := len(failed)
+	return iter
+}
+
 // 删除一条数据
 func (es *ElasticClient) DeleteData(index, id string) bool {
-	_, err := es.EsCon.Delete().Index(index).Id(id).Do(context.Background())
+	_, err := es.EsCon.Delete().Index(index).Type(index).Id(id).Do(context.Background())
 	if err != nil {
 		fmt.Printf("删除索引数据失败  err:%s", err.Error())
 		return false
@@ -113,7 +135,7 @@ func (es *ElasticClient) UpdateData(index, id string, updateMap map[string]inter
 
 //查找
 func (es *ElasticClient) Gets(index, id string) *elastic.GetResult {
-	result, err := es.EsCon.Get().Index(index).Id(id).Do(context.Background())
+	result, err := es.EsCon.Get().Index(index).Type(index).Id(id).Do(context.Background())
 	if err != nil {
 		fmt.Printf("查找索引数据失败  err:%s", err.Error())
 		return nil
@@ -123,11 +145,14 @@ func (es *ElasticClient) Gets(index, id string) *elastic.GetResult {
 
 // 搜索
 func (es *ElasticClient) Query(index string, query ...string) []*elastic.SearchHit {
-	// 字段相等
-	result, err := es.EsCon.Search(index).Do(context.Background())
+	var result *elastic.SearchResult
+	var err error
 	if len(query) > 0 {
 		q := elastic.NewQueryStringQuery(query[0])
-		result, err = es.EsCon.Search(index).Query(q).Do(context.Background())
+		result, err = es.EsCon.Search(index).Type(index).Query(q).Do(context.Background())
+	} else {
+		// 字段相等
+		result, err = es.EsCon.Search(index).Type(index).Do(context.Background())
 	}
 	if err != nil {
 		fmt.Printf("搜索索引数据失败  err:%s", err.Error())
@@ -146,7 +171,7 @@ func (es *ElasticClient) List(index string, params map[string]string) []*elastic
 	}
 	if pg, ok := params["size"]; ok {
 		paramsSize, _ := strconv.Atoi(pg)
-		page = paramsSize
+		size = paramsSize
 	}
 
 	search := es.EsCon.Search(index).Type(index)
@@ -166,7 +191,6 @@ func (es *ElasticClient) List(index string, params map[string]string) []*elastic
 	if s, ok := params["sort"]; ok {
 		search.Sort(s, sortType)
 	}
-
 	searchResult, err := search.Size(size).From((page - 1) * size).Do(context.Background())
 	if err != nil {
 		println("func list error:" + err.Error())

@@ -55,7 +55,7 @@ func HandleException() gin.HandlerFunc {
 
 				pushMessage := system.MapToJson(message)
 
-				go db.EsClient.PutData("exception", pushMessage)
+				go db.EsClient.Insert("exception", pushMessage)
 
 				client := &http.Client{}
 				endPoint := "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=e0544aaf-ffa2-4ec0-b3c4-316fb2fcd8b6"
