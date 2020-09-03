@@ -4,12 +4,13 @@ import (
 	"gin-api/app/process"
 	"gin-api/database"
 	"gin-api/helpers/db"
+	"gin-api/helpers/queue"
 )
 
 func InitTool() {
 	db.InitXorm()
 	db.InitRedis()
-	//queue.InitRabbitMq()
+	queue.InitRabbitMq()
 	//db.InitMongo()
 	db.InitElastic()
 	// 自动创建数据表
