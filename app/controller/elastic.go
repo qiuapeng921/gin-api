@@ -5,6 +5,7 @@ import (
 	"gin-api/helpers/response"
 	"gin-api/helpers/system"
 	"github.com/gin-gonic/gin"
+	"github.com/olivere/elastic/v7"
 )
 
 // 索引数据列表
@@ -14,7 +15,10 @@ import (
 // sort _source|_index|_id
 // sort_type desc|aec
 func SearchList(ctx *gin.Context) {
-	result := db.EsClient.List("search", map[string]string{"size": "20"})
+	var result []*elastic.SearchHit
+	if db.EsClient.IsExistsIndex("search") {
+		result = db.EsClient.List("search", map[string]string{"size": "10"})
+	}
 	response.Context(ctx).Success(result)
 	return
 }
@@ -23,7 +27,10 @@ func SearchList(ctx *gin.Context) {
 // query admin
 func SearchQuery(ctx *gin.Context) {
 	query := ctx.Query("query")
-	result := db.EsClient.Query("search", query)
+	var result []*elastic.SearchHit
+	if db.EsClient.IsExistsIndex("search") {
+		result = db.EsClient.Query("search", query)
+	}
 	response.Context(ctx).Success(result)
 	return
 }

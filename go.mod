@@ -18,7 +18,6 @@ require (
 	github.com/lestrrat-go/strftime v1.0.3 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.4
 	github.com/olivere/elastic/v7 v7.0.20
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5
 	github.com/russross/blackfriday v1.5.2
 	github.com/sirupsen/logrus v1.6.0

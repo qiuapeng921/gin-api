@@ -8,12 +8,11 @@ import (
 )
 
 func InitConsume() {
-	channel, message, err := queue.Consumer("request", "request")
-	defer channel.Close()
-	if err != nil {
-		fmt.Println("获取队列失败" + err.Error())
-	}
 	for {
+		channel, message, err := queue.Consumer("request", "request")
+		if err != nil {
+			fmt.Println("获取队列失败" + err.Error())
+		}
 		select {
 		case msg := <-message:
 			go db.EsClient.Insert("request", string(msg.Body))
@@ -22,6 +21,7 @@ func InitConsume() {
 				fmt.Println("rabbit确认消息失败 错误信息:" + err.Error())
 			}
 		}
+		channel.Close()
 		time.Sleep(100 * time.Millisecond)
 	}
 }
