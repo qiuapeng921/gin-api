@@ -10,6 +10,7 @@ require (
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0
 	github.com/go-playground/validator/v10 v10.2.0
+	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/go-redis/redis/v7 v7.4.0
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/goinggo/mapstructure v0.0.0-20140717182941-194205d9b4a9
@@ -25,10 +26,12 @@ require (
 	github.com/rs/xid v1.2.1
 	github.com/russross/blackfriday v1.5.2
 	github.com/sirupsen/logrus v1.6.0
+	github.com/spf13/viper v1.7.1
 	github.com/streadway/amqp v1.0.0
-	github.com/stretchr/testify v1.5.1
+	github.com/stretchr/testify v1.5.1 // indirect
 	github.com/tebeka/strftime v0.1.5 // indirect
 	go.mongodb.org/mongo-driver v1.4.1
+	go.uber.org/dig v1.10.0
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	xorm.io/xorm v1.0.4

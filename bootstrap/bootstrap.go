@@ -3,6 +3,8 @@ package bootstrap
 import (
 	"context"
 	"fmt"
+	"gin-api/helpers/app"
+	"gin-api/helpers/system"
 	"gin-api/routers"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -19,7 +21,8 @@ func init() {
 		log.Fatal(err.Error())
 	}
 	// 初始化所有工具类
-	InitTool()
+	//InitTool()
+	system.SecurePanic(app.Redis().Connect())
 }
 
 func Run() {
