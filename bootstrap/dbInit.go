@@ -5,7 +5,13 @@ import (
 	"gin-api/database"
 	"gin-api/helpers/db"
 	"gin-api/helpers/queue"
+	"gin-api/helpers/system"
+	"github.com/gin-gonic/gin/binding"
 )
+
+func init() {
+	binding.Validator = new(system.Validator)
+}
 
 func InitTool() {
 	db.InitXorm()
