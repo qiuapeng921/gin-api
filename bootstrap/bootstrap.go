@@ -3,7 +3,11 @@ package bootstrap
 import (
 	"context"
 	"fmt"
+	"gin-api/app/process"
+	"gin-api/database"
 	"gin-api/helpers/app"
+	"gin-api/helpers/db"
+	"gin-api/helpers/queue"
 	"gin-api/helpers/system"
 	"gin-api/routers"
 	"github.com/gin-gonic/gin"
@@ -21,8 +25,16 @@ func init() {
 		log.Fatal(err.Error())
 	}
 	// 初始化所有工具类
-	//InitTool()
+	db.InitXorm()
+	db.InitRedis()
 	system.SecurePanic(app.Redis().Connect())
+	queue.InitRabbitMq()
+	//db.InitMongo()
+	db.InitElastic()
+	// 自动创建数据表
+	database.AutoGenTable()
+
+	process.InitProcess()
 }
 
 func Run() {
