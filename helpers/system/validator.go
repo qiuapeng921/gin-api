@@ -16,8 +16,7 @@ var trans = zht()
 // zht return a simple chinese translator
 func zht() ut.Translator {
 	//中文翻译器
-	zh_ch := zh.New()
-	uni := ut.New(zh_ch)
+	uni := ut.New(zh.New())
 	trans, _ := uni.GetTranslator("zh")
 	return trans
 }

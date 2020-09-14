@@ -15,11 +15,6 @@ func init() {
 	_ = container.Provide(newRedis)
 }
 
-// newRedis
-func newRedis(conf *config.Config) *redis.Client {
-	return redis.New(conf.Redis())
-}
-
 func Redis() (client *redis.Client) {
 	_ = container.Invoke(func(cli *redis.Client) {
 		client = cli
