@@ -19,8 +19,8 @@ import (
 	"gin-api/app/models/user_message"
 	"gin-api/app/models/user_record"
 	"gin-api/app/models/users"
-	"gin-api/helpers/db"
-	"gin-api/helpers/system"
+	"gin-api/app/utility/db"
+	"gin-api/app/utility/system"
 	"xorm.io/xorm"
 )
 

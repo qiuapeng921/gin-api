@@ -2,7 +2,7 @@ package app
 
 import (
 	"gin-api/config"
-	"gin-api/helpers/redis"
+	"gin-api/app/utility/redis"
 )
 
 // newRedis

@@ -1,8 +1,8 @@
 package app
 
 import (
+	"gin-api/app/utility/redis"
 	"gin-api/config"
-	"gin-api/helpers/redis"
 	"go.uber.org/dig"
 )
 

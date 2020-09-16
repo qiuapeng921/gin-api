@@ -1,4 +1,4 @@
-package system
+package mail
 
 import (
 	"fmt"
@@ -17,7 +17,7 @@ func SendMail(mailTo string, subject string, body string) error {
 	m.SetHeader("Subject", subject)
 	//设置邮件正文
 	m.SetBody("text/html", body)
-	d := gomail.NewDialer("smtp.163.com", 25,"qiuapeng921@163.com", "qiuapeng921@163.com")
+	d := gomail.NewDialer("smtp.163.com", 25,"qiuapeng921@163.com", "PJIKJQNZJJWDOLTA")
 	err := d.DialAndSend(m)
 	if err != nil {
 		fmt.Println(err)

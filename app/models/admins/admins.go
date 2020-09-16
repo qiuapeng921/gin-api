@@ -1,7 +1,7 @@
 package admins
 
 import (
-	"gin-api/helpers/db"
+	"gin-api/app/utility/db"
 )
 
 func GetAdminById(id int) (entity Entity, err error) {

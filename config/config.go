@@ -1,7 +1,7 @@
 package config
 
 import (
-	"gin-api/helpers/redis"
+	"gin-api/app/utility/redis"
 	"github.com/spf13/viper"
 	"os"
 	"strconv"

@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"gin-api/helpers/jwt"
-	"gin-api/helpers/response"
+	"gin-api/app/utility/jwt"
+	"gin-api/app/utility/response"
 	"github.com/gin-gonic/gin"
 	"time"
 )

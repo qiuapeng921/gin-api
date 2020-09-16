@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"gin-api/helpers/db"
-	"gin-api/helpers/response"
-	"gin-api/helpers/system"
+	"gin-api/app/utility/db"
+	"gin-api/app/utility/response"
+	"gin-api/app/utility/system"
 	"github.com/gin-gonic/gin"
 	"github.com/olivere/elastic/v7"
 )

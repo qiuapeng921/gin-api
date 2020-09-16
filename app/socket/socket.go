@@ -2,7 +2,7 @@ package socket
 
 import (
 	"gin-api/app/socket/service"
-	"gin-api/helpers/system"
+	"gin-api/app/utility/system"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"log"

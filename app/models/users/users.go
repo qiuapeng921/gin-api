@@ -1,6 +1,6 @@
 package users
 
-import "gin-api/helpers/db"
+import "gin-api/app/utility/db"
 
 func GetUserById(id int) (user Entity, err error) {
 	_, err = db.OrmClient().ID(id).Get(&user)

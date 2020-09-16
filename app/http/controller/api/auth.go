@@ -2,10 +2,10 @@ package api
 
 import (
 	"gin-api/app/models/users"
-	"gin-api/helpers/db"
-	"gin-api/helpers/jwt"
-	"gin-api/helpers/response"
-	"gin-api/helpers/system"
+	"gin-api/app/utility/db"
+	"gin-api/app/utility/jwt"
+	"gin-api/app/utility/response"
+	"gin-api/app/utility/system"
 	"github.com/gin-gonic/gin"
 )
 

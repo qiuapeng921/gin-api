@@ -2,8 +2,8 @@ package process
 
 import (
 	"fmt"
-	"gin-api/helpers/queue"
-	"gin-api/helpers/system"
+	"gin-api/app/utility/queue"
+	"gin-api/app/utility/system"
 	"time"
 )
 

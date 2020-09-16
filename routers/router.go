@@ -1,10 +1,10 @@
 package routers
 
 import (
-	"gin-api/app/controller"
-	"gin-api/app/middleware"
+	"gin-api/app/http/controller"
+	"gin-api/app/http/middleware"
 	"gin-api/app/socket"
-	"gin-api/helpers/templates"
+	"gin-api/app/utility/templates"
 	"github.com/gin-gonic/gin"
 )
 

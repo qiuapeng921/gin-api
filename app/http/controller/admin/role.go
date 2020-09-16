@@ -2,8 +2,8 @@ package admin
 
 import (
 	"gin-api/app/models/roles"
-	"gin-api/helpers/db"
-	"gin-api/helpers/response"
+	"gin-api/app/utility/db"
+	"gin-api/app/utility/response"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )

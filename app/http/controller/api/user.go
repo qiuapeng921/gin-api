@@ -2,7 +2,7 @@ package api
 
 import (
 	"gin-api/app/models/users"
-	"gin-api/helpers/response"
+	"gin-api/app/utility/response"
 	"github.com/gin-gonic/gin"
 )
 

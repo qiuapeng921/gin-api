@@ -1,7 +1,7 @@
 package roles
 
 import (
-	"gin-api/helpers/db"
+	"gin-api/app/utility/db"
 )
 
 func GetRole() (entity []Entity, err error) {

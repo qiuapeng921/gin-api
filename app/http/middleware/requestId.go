@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"gin-api/helpers/system"
+	"gin-api/app/utility/system"
 	"github.com/gin-gonic/gin"
 )
 

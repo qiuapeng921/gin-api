@@ -2,7 +2,7 @@ package admin
 
 import (
 	"gin-api/app/service"
-	"gin-api/helpers/response"
+	"gin-api/app/utility/response"
 	"github.com/gin-gonic/gin"
 )
 

@@ -1,7 +1,7 @@
 package api
 
 import (
-	"gin-api/helpers/response"
+	"gin-api/app/utility/response"
 	"github.com/gin-gonic/gin"
 )
 

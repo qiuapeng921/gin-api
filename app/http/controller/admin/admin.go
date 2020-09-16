@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"gin-api/app/models/admin_role"
 	"gin-api/app/models/admins"
-	"gin-api/helpers/db"
-	"gin-api/helpers/response"
-	"gin-api/helpers/system"
+	"gin-api/app/utility/db"
+	"gin-api/app/utility/response"
+	"gin-api/app/utility/system"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )

@@ -1,7 +1,7 @@
 package templates
 
 import (
-	"gin-api/helpers/system"
+	"gin-api/app/utility/system"
 	"html/template"
 )
 

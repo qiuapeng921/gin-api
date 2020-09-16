@@ -3,9 +3,9 @@ package service
 import (
 	"errors"
 	"gin-api/app/models/admins"
-	"gin-api/helpers/db"
-	"gin-api/helpers/jwt"
-	"gin-api/helpers/system"
+	"gin-api/app/utility/db"
+	"gin-api/app/utility/jwt"
+	"gin-api/app/utility/system"
 	"github.com/gin-gonic/gin"
 	"time"
 )
