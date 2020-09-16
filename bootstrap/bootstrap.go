@@ -22,12 +22,13 @@ import (
 func init() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal(err.Error())
+		panic("配置文件不存在" + err.Error())
 	}
 	// 初始化所有工具类
 	db.InitXorm()
 	db.InitRedis()
 	system.SecurePanic(app.Redis().Connect())
+
 	queue.InitRabbitMq()
 	//db.InitMongo()
 	db.InitElastic()
