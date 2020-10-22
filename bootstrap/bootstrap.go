@@ -11,6 +11,7 @@ import (
 	"gin-api/database"
 	"gin-api/routers"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
@@ -36,6 +37,9 @@ func init() {
 	database.AutoGenTable()
 
 	process.InitProcess()
+	
+	// 汉化参数验证器
+	binding.Validator = new(system.Validator)
 }
 
 func Run() {
