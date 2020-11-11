@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"gin-api/app/utility/jwt"
+	"gin-api/app/utility/auth"
 	"gin-api/app/utility/response"
 	"github.com/gin-gonic/gin"
 	"time"
@@ -16,7 +16,7 @@ func ApiAuth() gin.HandlerFunc {
 				response.Context(ctx).Error(20000, "token不能为空")
 				return
 			}
-			result, err := jwt.ParseToken(token)
+			result, err := auth.ParseToken(token)
 			if err != nil {
 				response.Context(ctx).Error(20001, err.Error())
 				return

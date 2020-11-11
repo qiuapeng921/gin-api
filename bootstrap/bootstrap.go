@@ -3,10 +3,7 @@ package bootstrap
 import (
 	"context"
 	"fmt"
-	"gin-api/app/process"
 	"gin-api/app/utility/app"
-	"gin-api/app/utility/db"
-	"gin-api/app/utility/queue"
 	"gin-api/app/utility/system"
 	"gin-api/database"
 	"gin-api/routers"
@@ -21,23 +18,14 @@ import (
 )
 
 func init() {
-	err := godotenv.Load()
-	if err != nil {
-		panic("配置文件不存在" + err.Error())
-	}
-	// 初始化所有工具类
-	db.InitXorm()
-	db.InitRedis()
-	system.SecurePanic(app.Redis().Connect())
+	app.Error("配置文件", godotenv.Load())
 
-	queue.InitRabbitMq()
-	//db.InitMongo()
-	db.InitElastic()
+	// 初始Mysql
+	app.Panic(app.ConnectDB())
+	// 初始Redis
+	app.Panic(app.Redis().Connect())
 	// 自动创建数据表
 	database.AutoGenTable()
-
-	process.InitProcess()
-	
 	// 汉化参数验证器
 	binding.Validator = new(system.Validator)
 }
@@ -81,8 +69,8 @@ func Run() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	if err := server.Shutdown(ctx); err != nil {
-		log.Fatal("服务关闭错误:", err.Error())
-	}
+
+	app.Error("服务关闭", server.Shutdown(ctx))
+
 	log.Println("服务已关闭")
 }

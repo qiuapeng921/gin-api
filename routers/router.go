@@ -14,7 +14,6 @@ func SetupRouter(router *gin.Engine) {
 	router.Use(
 		middleware.RequestLog(),
 		middleware.Cors(),
-		middleware.HandleException(),
 		middleware.RequestId(),
 	)
 

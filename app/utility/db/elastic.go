@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"gin-api/app/utility/app"
 	"github.com/olivere/elastic/v7"
 	"log"
 	"os"
@@ -20,33 +21,31 @@ func InitElastic() {
 	host := os.Getenv("ELASTIC_HOST")
 	var err error
 	EsClient.EsCon, err = elastic.NewClient(elastic.SetSniff(false), elastic.SetURL(host))
-	if err != nil {
-		panic(fmt.Sprintf("elastic初始化失败 错误信息：%s", err.Error()))
-	}
+
+	app.Error("elastic初始化失败", err)
+
 	ctx := context.Background()
 	_, _, err = EsClient.EsCon.Ping(host).Do(ctx)
-	if err != nil {
-		panic(fmt.Sprintf("elastic连接检测 错误原因：%s", err.Error()))
-	}
+
+	app.Error("elastic连接检测", err)
+
 	fmt.Println("elastic连接成功")
 }
 
 //创建
 func (es *ElasticClient) CreateIndex(index string) bool {
 	_, err := es.EsCon.CreateIndex(index).Do(context.Background())
-	if err != nil {
-		fmt.Printf("创建索引失败  err:%s", err.Error())
-		return false
-	}
+
+	app.Error("创建索引失败", err)
+
 	return true
 }
 
 func (es *ElasticClient) DeleteIndex(index string) bool {
 	_, err := es.EsCon.DeleteIndex(index).Do(context.Background())
-	if err != nil {
-		fmt.Printf("删除索引失败  err:%s", err.Error())
-		return false
-	}
+
+	app.Error("删除索引失败", err)
+
 	return true
 }
 
@@ -71,10 +70,9 @@ func (es *ElasticClient) Insert(index string, bodyJSON interface{}) bool {
 		}
 	}
 	_, err := es.EsCon.Index().Index(index).Type(index).BodyJson(bodyJSON).Do(context.Background())
-	if err != nil {
-		fmt.Printf("往索引添加数据失败  err:%s", err.Error())
-		return false
-	}
+
+	app.Error("往索引添加数据失败", err)
+
 	return true
 }
 
@@ -92,9 +90,9 @@ func (es *ElasticClient) BatchInsert(index string, type_ string, datas ...interf
 	}
 
 	response, err := bulkRequest.Do(context.TODO())
-	if err != nil {
-		panic(err)
-	}
+
+	app.Panic(err)
+
 	failed := response.Failed()
 	iter := len(failed)
 	return iter
@@ -103,10 +101,9 @@ func (es *ElasticClient) BatchInsert(index string, type_ string, datas ...interf
 // 删除一条数据
 func (es *ElasticClient) DeleteData(index, id string) bool {
 	_, err := es.EsCon.Delete().Index(index).Type(index).Id(id).Do(context.Background())
-	if err != nil {
-		fmt.Printf("删除索引数据失败  err:%s", err.Error())
-		return false
-	}
+
+	app.Error("删除索引数据失败", err)
+
 	return true
 }
 
@@ -136,10 +133,9 @@ func (es *ElasticClient) UpdateData(index, id string, updateMap map[string]inter
 //查找
 func (es *ElasticClient) Gets(index, id string) *elastic.GetResult {
 	result, err := es.EsCon.Get().Index(index).Type(index).Id(id).Do(context.Background())
-	if err != nil {
-		fmt.Printf("查找索引数据失败  err:%s", err.Error())
-		return nil
-	}
+
+	app.Error("查找索引数据失败", err)
+
 	return result
 }
 
@@ -154,10 +150,9 @@ func (es *ElasticClient) Query(index string, query ...string) []*elastic.SearchH
 		// 字段相等
 		result, err = es.EsCon.Search(index).Type(index).Do(context.Background())
 	}
-	if err != nil {
-		fmt.Printf("搜索索引数据失败  err:%s", err.Error())
-		return nil
-	}
+
+	app.Error("搜索索引数据失败", err)
+
 	return result.Hits.Hits
 }
 
@@ -192,8 +187,8 @@ func (es *ElasticClient) List(index string, params map[string]string) []*elastic
 		search.Sort(s, sortType)
 	}
 	searchResult, err := search.Size(size).From((page - 1) * size).Do(context.Background())
-	if err != nil {
-		println("func list error:" + err.Error())
-	}
+
+	app.Error("func list error", err)
+
 	return searchResult.Hits.Hits
 }

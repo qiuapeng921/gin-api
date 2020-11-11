@@ -1,13 +1,15 @@
 package templates
 
 import (
+	"gin-api/app/utility/app"
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
 	"path/filepath"
+	"strings"
 )
 
 func InitTemplate(router *gin.Engine) {
-	router.Static("/static", "./public/assets")
+	router.Static("/assets", "./public/assets")
 	router.StaticFile("/favicon.ico", "./public/favicon.ico")
 	router.HTMLRender = loadTemplates("./templates")
 }
@@ -16,39 +18,35 @@ func InitTemplate(router *gin.Engine) {
 func loadTemplates(templatesDir string) multitemplate.Renderer {
 	renderer := multitemplate.NewRenderer()
 
-	// 加载前台模板
-	frontendLayouts, err := filepath.Glob(templatesDir + "/layouts/frontend_base.html")
-	if err != nil {
-		panic(err.Error())
-	}
-	frontendPages, pagesError := filepath.Glob(templatesDir + "/frontend/*.html")
-	if pagesError != nil {
-		panic(pagesError.Error())
-	}
-
-	for _, page := range frontendPages {
-		layoutCopy := make([]string, len(frontendLayouts))
-		copy(layoutCopy, frontendLayouts)
-		files := append(layoutCopy, page)
-		renderer.AddFromFilesFuncs(filepath.Base(page), FuncMap(), files...)
-	}
+	var (
+		layouts, pages, subPages, newPages []string
+		err                                error
+	)
 
 	// 加载后台模板
-	backendLayouts, err := filepath.Glob(templatesDir + "/layouts/backend_base.html")
-	if err != nil {
-		panic(err.Error())
+	layouts, err = filepath.Glob(templatesDir + "/layouts/base.html")
+	app.Panic(err)
+
+	pages, err = filepath.Glob(templatesDir + "/page/*.html")
+	app.Panic(err)
+
+	subPages, err = filepath.Glob(templatesDir + "/page/**/*.html")
+	app.Panic(err)
+
+	if len(subPages) > 0 {
+		for _, page := range subPages {
+			newPages = append(pages, page)
+		}
+	} else {
+		newPages = pages
 	}
 
-	backendPages, err := filepath.Glob(templatesDir + "/backend/*.html")
-	if err != nil {
-		panic(err.Error())
-	}
-	for _, page := range backendPages {
-		layoutCopy := make([]string, len(backendLayouts))
-		copy(layoutCopy, backendLayouts)
+	for _, page := range newPages {
+		layoutCopy := make([]string, len(layouts))
+		copy(layoutCopy, layouts)
 		files := append(layoutCopy, page)
-		renderer.AddFromFilesFuncs(filepath.Base(page), FuncMap(), files...)
+		newPage := strings.Replace(filepath.ToSlash(page), "templates/page/", "", -1)
+		renderer.AddFromFilesFuncs(newPage, FuncMap(), files...)
 	}
-
 	return renderer
 }

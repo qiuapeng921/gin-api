@@ -1,6 +1,7 @@
 package config
 
 import (
+	"gin-api/app/utility/mysql"
 	"gin-api/app/utility/redis"
 	"github.com/spf13/viper"
 	"os"
@@ -22,6 +23,7 @@ type Config struct {
 	mu *sync.Mutex
 	*viper.Viper
 	redis *redis.Config
+	mysql *mysql.Config
 }
 
 func (conf *Config) Redis() *redis.Config {
@@ -42,4 +44,29 @@ func (conf *Config) Redis() *redis.Config {
 		}
 	}
 	return conf.redis
+}
+
+// mysql
+func (conf *Config) Mysql() *mysql.Config {
+	if conf.mysql == nil {
+		conf.mu.Lock()
+		defer conf.mu.Unlock()
+		host := os.Getenv("DB_HOST")
+		database := os.Getenv("DB_DATABASE")
+		username := os.Getenv("DB_USERNAME")
+		password := os.Getenv("DB_PASSWORD")
+		charset := os.Getenv("DB_CHARSET")
+		maxIdle, _ := strconv.Atoi(os.Getenv("DB_MAX_IDLE"))
+		maxOpen, _ := strconv.Atoi(os.Getenv("DB_MAX_OPEN"))
+		conf.mysql = &mysql.Config{
+			Host:     host,
+			Database: database,
+			Username: username,
+			Password: password,
+			Charset:  charset,
+			MaxIdle:  maxIdle,
+			MaxOpen:  maxOpen,
+		}
+	}
+	return conf.mysql
 }

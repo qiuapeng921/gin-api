@@ -4,9 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"gin-api/app/utility/queue"
 	"gin-api/app/utility/response"
-	"gin-api/app/utility/system"
 	"github.com/gin-gonic/gin"
 	logs "github.com/lestrrat-go/file-rotatelogs"
 	"github.com/rifflock/lfshook"
@@ -128,8 +126,6 @@ func RequestLog() gin.HandlerFunc {
 			"response_data":        responseData,
 			"cost_time":            endTime.Sub(startTime),
 		}
-
-		go queue.Publish("request","request", system.MapToJson(fields))
 
 		// 日志格式
 		logger.WithFields(fields).Info()

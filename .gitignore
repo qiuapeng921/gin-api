@@ -3,7 +3,6 @@
 
 *.exe
 main
-gin-api.exe
 .env
 runtime/*
 vendor

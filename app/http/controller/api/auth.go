@@ -2,8 +2,8 @@ package api
 
 import (
 	"gin-api/app/models/users"
-	"gin-api/app/utility/db"
-	"gin-api/app/utility/jwt"
+	"gin-api/app/utility/app"
+	"gin-api/app/utility/auth"
 	"gin-api/app/utility/response"
 	"gin-api/app/utility/system"
 	"github.com/gin-gonic/gin"
@@ -32,7 +32,7 @@ func Register(c *gin.Context) {
 	}
 	result.Username = request.Username
 	result.Password = system.EncodeMD5(request.Username)
-	insertId, insertErr := db.OrmClient().InsertOne(result)
+	insertId, insertErr := app.DB().InsertOne(result)
 	if insertErr != nil {
 		response.Context(c).Error(10002, "用户注册失败"+insertErr.Error())
 		return
@@ -62,7 +62,7 @@ func Login(c *gin.Context) {
 		response.Context(c).Error(10003, "账号密码不匹配")
 		return
 	}
-	token, time, jwtErr := jwt.GenerateToken(uint(user.Id), user.Username, "api")
+	token, time, jwtErr := auth.GenerateToken(uint(user.Id), user.Username, "api")
 	if jwtErr != nil {
 		response.Context(c).Error(10004, "token生成失败"+jwtErr.Error())
 		return
