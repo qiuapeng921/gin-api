@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"gin-api/app/utility/auth"
-	"gin-api/app/utility/response"
+	jwt "gin-admin/app/utility/auth"
+	"gin-admin/app/utility/response"
 	"github.com/gin-gonic/gin"
 	"time"
 )
@@ -10,23 +10,24 @@ import (
 func AdminAuth() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		uri := ctx.Request.URL.Path
-		if uri != "/admin/login" {
-			token := ctx.Request.Header.Get("token")
-			if token == "" {
-				response.Context(ctx).Error(20000, "token不能为空")
+		if uri != "/auth/login" {
+			cookie, _ := ctx.Request.Cookie("access_token")
+			token := cookie.Value
+			if token = cookie.Value; token == "" {
+				response.Context(ctx).View("error", gin.H{"message": "未登录..."})
 				return
 			}
-			result, err := auth.ParseToken(token)
+			result, err := jwt.ParseToken(token)
 			if err != nil {
-				response.Context(ctx).Error(20001, err.Error())
+				response.Context(ctx).View("error", gin.H{"message": err.Error()})
 				return
 			}
 			if result.ExpiresAt < time.Now().Unix() {
-				response.Context(ctx).Error(20002, "token过期")
+				response.Context(ctx).View("error", gin.H{"message": "token过期"})
 				return
 			}
 			if result.Category != "admin" {
-				response.Context(ctx).Error(20003, "token类型错误")
+				response.Context(ctx).View("error", gin.H{"message": "token类型错误"})
 				return
 			}
 			ctx.Set("id", int(result.Id))

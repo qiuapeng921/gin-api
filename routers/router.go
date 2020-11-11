@@ -1,38 +1,38 @@
 package routers
 
 import (
-	"gin-api/app/http/controller"
-	"gin-api/app/http/middleware"
-	"gin-api/app/socket"
-	"gin-api/app/utility/templates"
+	"gin-admin/app/http/middleware"
+	"gin-admin/app/utility/response"
+	"gin-admin/app/utility/templates"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func SetupRouter(router *gin.Engine) {
+	// 加载模板引擎
 	templates.InitTemplate(router)
 
 	router.Use(
-		middleware.RequestLog(),
 		middleware.Cors(),
+		middleware.HandleException(),
 		middleware.RequestId(),
 	)
 
-	router.GET("/", controller.Index)
+	router.GET("/", func(ctx *gin.Context) {
+		ctx.Redirect(http.StatusMovedPermanently, "/admin/index")
+	})
 
-	esGroup := router.Group("/es")
-	{
-		esGroup.GET("/list", controller.SearchList)
-		esGroup.GET("/query", controller.SearchQuery)
-		esGroup.GET("/create", controller.SearchCreate)
-		esGroup.GET("/info", controller.SearchInfo)
-		esGroup.GET("/update", controller.SearchUpdate)
-		esGroup.GET("/delete", controller.SearchDelete)
-	}
+	// 404错误
+	router.NoRoute(func(ctx *gin.Context) {
+		response.Context(ctx).View("error", gin.H{"message": "路由异常"})
+		return
+	})
 
-	router.GET("/ws", socket.Handler)
+	router.NoMethod(func(ctx *gin.Context) {
+		response.Context(ctx).View("error", gin.H{"message": "请求方式错误"})
+		return
+	})
 
 	// 加载后台路由组
 	InitAdminRouter(router)
-	// 加载前台路由组
-	InitApiRouter(router)
 }
