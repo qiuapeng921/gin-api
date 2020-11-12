@@ -16,11 +16,24 @@ func Context(c *gin.Context) *wrapper {
 }
 
 type response struct {
-	Code    int         `json:"code"`
-	Count   int         `json:"count"`
-	Status  int         `json:"status"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+	Code   int `json:"code"`
+	Status int `json:"status"`
+}
+
+type pageResponse struct {
+	response
+	Count int `json:"count"`
+	successResponse
+}
+
+type successResponse struct {
+	response
+	Data interface{} `json:"data"`
+}
+
+type errorResponse struct {
+	response
+	Message string `json:"message"`
 }
 
 func (wrapper *wrapper) View(name string, data ...interface{}) {
@@ -38,24 +51,19 @@ func (wrapper *wrapper) Success(data ...interface{}) {
 	if len(data) > 0 {
 		responseData = data[0]
 	}
-	wrapper.JSON(http.StatusOK, response{
-		Code:    0,
-		Status:  http.StatusOK,
-		Message: "Success",
-		Data:    responseData,
-	})
+	var successResponse successResponse
+	successResponse.Status = http.StatusOK
+	successResponse.Data = responseData
+	wrapper.JSON(http.StatusOK, successResponse)
 	wrapper.Abort()
 	return
 }
 
 func (wrapper *wrapper) Page(count int, data ...interface{}) {
-	wrapper.JSON(http.StatusOK, response{
-		Code:    0,
-		Count:   count,
-		Status:  http.StatusOK,
-		Message: "Success",
-		Data:    data,
-	})
+	var pageResponse pageResponse
+	pageResponse.Status = http.StatusOK
+	pageResponse.Data = data
+	wrapper.JSON(http.StatusOK, pageResponse)
 	wrapper.Abort()
 	return
 }
@@ -65,11 +73,10 @@ func (wrapper *wrapper) Error(errCode int, message ...string) {
 	if len(message) > 0 {
 		responseMessage = message[0]
 	}
-	wrapper.JSON(http.StatusOK, response{
-		Code:    errCode,
-		Status:  errCode,
-		Message: responseMessage,
-	})
+	var errorResponse errorResponse
+	errorResponse.Status = errCode
+	errorResponse.Message = responseMessage
+	wrapper.JSON(http.StatusOK, errorResponse)
 	wrapper.Abort()
 	return
 }
