@@ -1,15 +1,12 @@
 package controller
 
 import (
-	"gin-admin/app/models/admins"
-	"gin-admin/app/utility/response"
+	"gin-api/app/utility/response"
 	"github.com/gin-gonic/gin"
 )
 
 func Index(c *gin.Context) {
-	queryId, _ := c.Get("id")
-	admin, _ := admins.GetAdminById(queryId.(int))
-	response.Context(c).View("index", gin.H{"admin": admin})
+	response.Context(c).View("index")
 	return
 }
 func Dashboard(c *gin.Context) {

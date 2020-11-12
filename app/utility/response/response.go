@@ -2,7 +2,7 @@ package response
 
 import (
 	"fmt"
-	"gin-admin/app/consts"
+	"gin-api/app/consts"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -66,7 +66,7 @@ func (wrapper *wrapper) Error(errCode int, message ...string) {
 		responseMessage = message[0]
 	}
 	wrapper.JSON(http.StatusOK, response{
-		Code:    0,
+		Code:    errCode,
 		Status:  errCode,
 		Message: responseMessage,
 	})

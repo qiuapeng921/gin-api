@@ -1,9 +1,9 @@
 package routers
 
 import (
-	"gin-admin/app/http/middleware"
-	"gin-admin/app/utility/response"
-	"gin-admin/app/utility/templates"
+	"gin-api/app/http/middleware"
+	"gin-api/app/utility/response"
+	"gin-api/app/utility/templates"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -14,12 +14,11 @@ func SetupRouter(router *gin.Engine) {
 
 	router.Use(
 		middleware.Cors(),
-		middleware.HandleException(),
 		middleware.RequestId(),
 	)
 
 	router.GET("/", func(ctx *gin.Context) {
-		ctx.Redirect(http.StatusMovedPermanently, "/admin/index")
+		ctx.Redirect(http.StatusMovedPermanently, "/auth/login")
 	})
 
 	// 404错误

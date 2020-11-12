@@ -1,8 +1,8 @@
 package routers
 
 import (
-	"gin-admin/app/http/controller"
-	"gin-admin/app/http/middleware"
+	"gin-api/app/http/controller"
+	"gin-api/app/http/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,8 +15,10 @@ func InitAdminRouter(router *gin.Engine) {
 		authGroup.POST("login", controller.Login)
 
 		authGroup.GET("captcha", controller.Captcha)
+
 		// 权限验证中间件 中间件上面的不做token验证
-		authGroup.Use(middleware.AdminAuth())
+		//authGroup.Use(middleware.AdminAuth())
+
 		authGroup.GET("logout", controller.Logout)
 	}
 
@@ -29,18 +31,5 @@ func InitAdminRouter(router *gin.Engine) {
 
 		groups.GET("page", controller.GetPage)
 		groups.Any("list", controller.GetAdminList)
-		groups.POST("detail", controller.GetAdminDetail)
-		groups.POST("create", controller.CreateAdmin)
-		groups.POST("update", controller.UpdateAdmin)
-		groups.POST("delete", controller.DeleteAdmin)
-
-		roleGroup := groups.Group("role")
-		{
-			roleGroup.POST("list", controller.RoleList)
-			roleGroup.POST("detail", controller.RoleDetail)
-			roleGroup.POST("create", controller.RoleCreate)
-			roleGroup.POST("update", controller.RoleUpdate)
-			roleGroup.POST("delete", controller.RoleDelete)
-		}
 	}
 }

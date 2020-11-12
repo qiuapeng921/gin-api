@@ -2,7 +2,7 @@
 
 ## 安装
 ```
-git clone https://gitea.phpswoole.cn/qiuapeng921/gin-api $GOPATH/src/gin-api
+git clone https://github.com/qiuapeng921/gin-api $GOPATH/src/gin-api
 ```
 
 ### 必须

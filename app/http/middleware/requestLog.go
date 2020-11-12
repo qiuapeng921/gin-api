@@ -2,16 +2,13 @@ package middleware
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
-	"gin-api/app/utility/response"
 	"github.com/gin-gonic/gin"
 	logs "github.com/lestrrat-go/file-rotatelogs"
 	"github.com/rifflock/lfshook"
 	"github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
-	"strconv"
 	"time"
 )
 
@@ -83,29 +80,9 @@ func RequestLog() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		bodyLogWriter := &bodyLogWriter{body: bytes.NewBufferString(""), ResponseWriter: c.Writer}
 		c.Writer = bodyLogWriter
-		// 开始时间
-		startTime := time.Now()
+
 		// 处理请求
 		c.Next()
-
-		responseBody := bodyLogWriter.body.String()
-
-		var responseCode string
-		var responseMsg string
-		var responseData interface{}
-
-		if responseBody != "" {
-			res := response.Response{}
-			err := json.Unmarshal([]byte(responseBody), &res)
-			if err == nil {
-				responseCode = strconv.Itoa(res.Code)
-				responseMsg = res.Message
-				responseData = res.Data
-			}
-		}
-
-		// 结束时间
-		endTime := time.Now()
 
 		if c.Request.Method == "POST" {
 			_ = c.Request.ParseForm()
@@ -119,12 +96,6 @@ func RequestLog() gin.HandlerFunc {
 			"request_referer":   c.Request.Referer(),
 			"request_post_data": c.Request.PostForm.Encode(),
 			"request_client_ip": c.ClientIP(),
-
-			"response_status_code": c.Writer.Status(),
-			"response_code":        responseCode,
-			"response_msg":         responseMsg,
-			"response_data":        responseData,
-			"cost_time":            endTime.Sub(startTime),
 		}
 
 		// 日志格式

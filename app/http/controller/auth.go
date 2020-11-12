@@ -2,11 +2,11 @@ package controller
 
 import (
 	"fmt"
-	"gin-admin/app/http/request"
-	"gin-admin/app/service"
-	"gin-admin/app/utility/app"
-	"gin-admin/app/utility/captcha"
-	"gin-admin/app/utility/response"
+	"gin-api/app/http/request"
+	"gin-api/app/service"
+	"gin-api/app/utility/app"
+	"gin-api/app/utility/captcha"
+	"gin-api/app/utility/response"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

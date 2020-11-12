@@ -1,9 +1,10 @@
 package middleware
 
 import (
-	jwt "gin-admin/app/utility/auth"
-	"gin-admin/app/utility/response"
+	"gin-api/app/utility/auth"
+	"gin-api/app/utility/response"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"time"
 )
 
@@ -11,13 +12,12 @@ func AdminAuth() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		uri := ctx.Request.URL.Path
 		if uri != "/auth/login" {
-			cookie, _ := ctx.Request.Cookie("access_token")
-			token := cookie.Value
-			if token = cookie.Value; token == "" {
-				response.Context(ctx).View("error", gin.H{"message": "未登录..."})
+			token, err := ctx.Cookie("access_token")
+			if err == http.ErrNoCookie || token == "" {
+				ctx.Redirect(http.StatusMovedPermanently, "/auth/login")
 				return
 			}
-			result, err := jwt.ParseToken(token)
+			result, err := auth.ParseToken(token)
 			if err != nil {
 				response.Context(ctx).View("error", gin.H{"message": err.Error()})
 				return
