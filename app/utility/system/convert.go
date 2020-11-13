@@ -18,12 +18,13 @@ func JsonToStruct(jsonStr string, obj interface{}) error {
 }
 
 // struct转json
-func StructToJson(Struct struct{}) {
-	jsonBytes, err := json.Marshal(Struct)
+func StructToJson(obj interface{})string {
+	jsonBytes, err := json.Marshal(obj)
 	if err != nil {
 		fmt.Println(err)
+		return ""
 	}
-	fmt.Println(string(jsonBytes))
+	return string(jsonBytes)
 }
 
 // json转map
