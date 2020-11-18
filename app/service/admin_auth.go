@@ -34,7 +34,7 @@ func HandelAdminAuth(username, password string) (interface{}, int, error) {
 	}
 	responseData := gin.H{
 		"admin":  gin.H{"id": admin.Id, "username": admin.Username, "phone": admin.Phone},
-		"token":  token,
+		"access_token":  token,
 		"expire": expiresAt - system.GetCurrentUnix(),
 	}
 	return responseData, 200, nil
