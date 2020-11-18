@@ -27,10 +27,10 @@ func loadTemplates(templatesDir string) multitemplate.Renderer {
 	layouts, err = filepath.Glob(templatesDir + "/layouts/base.html")
 	app.Panic(err)
 
-	pages, err = filepath.Glob(templatesDir + "/page/*.html")
+	pages, err = filepath.Glob(templatesDir + "/pages/*.html")
 	app.Panic(err)
 
-	subPages, err = filepath.Glob(templatesDir + "/page/**/*.html")
+	subPages, err = filepath.Glob(templatesDir + "/pages/**/*.html")
 	app.Panic(err)
 
 	if len(subPages) > 0 {
@@ -45,7 +45,7 @@ func loadTemplates(templatesDir string) multitemplate.Renderer {
 		layoutCopy := make([]string, len(layouts))
 		copy(layoutCopy, layouts)
 		files := append(layoutCopy, page)
-		newPage := strings.Replace(filepath.ToSlash(page), "templates/page/", "", -1)
+		newPage := strings.Replace(filepath.ToSlash(page), "templates/pages/", "", -1)
 		renderer.AddFromFilesFuncs(newPage, FuncMap(), files...)
 	}
 	return renderer
