@@ -30,9 +30,4 @@ func SetupRouter(router *gin.Engine) {
 	}
 
 	router.GET("/ws", socket.Handler)
-
-	// 加载后台路由组
-	InitAdminRouter(router)
-	// 加载前台路由组
-	InitApiRouter(router)
 }
