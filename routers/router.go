@@ -2,6 +2,7 @@ package routers
 
 import (
 	"gin-api/app/http/middleware"
+	"gin-api/app/socket"
 	"gin-api/app/utility/response"
 	"gin-api/app/utility/templates"
 	"github.com/gin-gonic/gin"
@@ -19,6 +20,10 @@ func SetupRouter(router *gin.Engine) {
 
 	router.GET("/", func(ctx *gin.Context) {
 		ctx.Redirect(http.StatusMovedPermanently, "/auth/login")
+	})
+
+	router.GET("/ws", func(ctx *gin.Context) {
+		socket.Handler(ctx)
 	})
 
 	// 404错误

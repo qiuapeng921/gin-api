@@ -12,9 +12,8 @@ func InitAdminRouter(router *gin.Engine) {
 	authGroup := router.Group("auth")
 	{
 		authGroup.GET("login", controller.Login)
-		authGroup.POST("login", controller.Login)
+		authGroup.POST("handle_login", controller.HandleLogin)
 		authGroup.GET("captcha", controller.Captcha)
-
 		authGroup.GET("logout", controller.Logout).Use(middleware.AdminAuth())
 	}
 
@@ -24,6 +23,6 @@ func InitAdminRouter(router *gin.Engine) {
 		groups.GET("dashboard", controller.Dashboard)
 
 		groups.GET("page", controller.GetPage)
-		groups.Any("list", controller.GetAdminList)
+		groups.GET("list", controller.GetAdminList)
 	}
 }

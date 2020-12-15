@@ -8,7 +8,6 @@ import (
 	"gin-api/app/utility/captcha"
 	"gin-api/app/utility/response"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 
@@ -20,15 +19,16 @@ func Captcha(ctx *gin.Context) {
 	return
 }
 
+func Login(ctx *gin.Context) {
+	response.Context(ctx).View("login")
+	return
+}
+
+
 // @用户登录
 // @Author 邱阿朋
 // @Date 16:43 2020/11/04
-func Login(ctx *gin.Context) {
-	if ctx.Request.Method == http.MethodGet {
-		response.Context(ctx).View("login")
-		return
-	}
-
+func HandleLogin(ctx *gin.Context) {
 	var params request.AuthRequest
 	if err := ctx.ShouldBind(&params); err != nil {
 		response.Context(ctx).Error(10000, err.Error())

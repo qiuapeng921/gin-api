@@ -66,7 +66,7 @@
             form.on('submit(LAY-user-login-submit)', function (obj) {
                 //请求登入接口
                 admin.req({
-                    url: '/auth/login',
+                    url: '/auth/handle_login',
                     method: 'post',
                     dataType: "json",
                     data: obj.field,
