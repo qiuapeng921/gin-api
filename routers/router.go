@@ -3,8 +3,8 @@ package routers
 import (
 	"gin-api/app/http/controller"
 	"gin-api/app/http/middleware"
-	"gin-api/app/socket"
 	"gin-api/app/utility/templates"
+	"gin-api/app/websocket"
 	"github.com/gin-gonic/gin"
 )
 
@@ -29,5 +29,7 @@ func SetupRouter(router *gin.Engine) {
 		esGroup.GET("/delete", controller.SearchDelete)
 	}
 
-	router.GET("/ws", socket.Handler)
+	router.GET("/ws", func(context *gin.Context) {
+		websocket.NewWebsocket(context)
+	})
 }
