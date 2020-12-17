@@ -48,13 +48,13 @@ func (s *Server) Upgrade(w http.ResponseWriter, r *http.Request) {
 	s.conn = conn
 	requestFd := fd
 
-	s.inter.OnOpen(s,r, fd)
+	s.inter.OnOpen(s,r, requestFd)
 
 	var frame Frame
 	for {
 		_, msg, err := s.conn.ReadMessage()
 		if err != nil {
-			s.UnBind(fd)
+			s.UnBind(requestFd)
 			s.inter.OnClose(s,requestFd)
 			break
 		}
