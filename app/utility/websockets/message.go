@@ -1,4 +1,4 @@
-package socket
+package websockets
 
 const UserChat = 1
 const GroupChat = 2

@@ -1,4 +1,4 @@
-package socket
+package websockets
 
 type Frame struct {
 	fd   int

@@ -1,4 +1,4 @@
-package socket
+package websockets
 
 import (
 	"gin-api/app/utility/app"

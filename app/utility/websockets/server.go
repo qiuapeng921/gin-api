@@ -1,4 +1,4 @@
-package socket
+package websockets
 
 import (
 	"gin-api/app/utility/app"
@@ -22,7 +22,7 @@ var (
 	bind Binder
 )
 
-type WebSocketHandleInterface interface {
+type WebSocketInterface interface {
 	OnOpen(s *Server,r *http.Request, fd int)
 	OnMessage(s *Server,frame *Frame)
 	OnClose(s *Server,fd int)
@@ -30,13 +30,13 @@ type WebSocketHandleInterface interface {
 
 
 type Server struct {
-	*websocket.Conn
-	WebSocketHandleInterface
+	conn *websocket.Conn
+	inter WebSocketInterface
 	Send
 }
 
-func NewServer(wh WebSocketHandleInterface) *Server {
-	return &Server{nil, wh, Send{Binder: &bind}}
+func NewServer(inter WebSocketInterface) *Server {
+	return &Server{nil, inter, Send{ &bind}}
 }
 
 func (s *Server) Upgrade(w http.ResponseWriter, r *http.Request) {
@@ -45,22 +45,23 @@ func (s *Server) Upgrade(w http.ResponseWriter, r *http.Request) {
 	fd++
 	s.Bind(fd, conn)
 
-	s.Conn = conn
+	s.conn = conn
 	requestFd := fd
 
-	s.OnOpen(s,r, fd)
+	s.inter.OnOpen(s,r, fd)
 
 	var frame Frame
 	for {
-		_, msg, err := s.Conn.ReadMessage()
+		_, msg, err := s.conn.ReadMessage()
 		if err != nil {
-			s.OnClose(s,requestFd)
+			s.UnBind(fd)
+			s.inter.OnClose(s,requestFd)
 			break
 		}
 		log.Println(string(msg))
 		frame.SetFd(requestFd)
 		frame.SetData(string(msg))
-		s.OnMessage(s,&frame)
+		s.inter.OnMessage(s,&frame)
 	}
 	return
 }
