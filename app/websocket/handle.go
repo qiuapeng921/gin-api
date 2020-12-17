@@ -32,7 +32,7 @@ func (h Handle) OnMessage(s *websockets.Server, frame *websockets.Frame) {
 	var receiver websockets.ReceiverMessage
 	err := system.JsonToStruct(frame.GetData(), &receiver)
 	if err != nil {
-		s.Push(frame.GetFd(), "消息类型错误")
+		s.SendToSome(s.GetAllFd(), fmt.Sprintf("用户:%d, 说:%s", frame.GetFd(), frame.GetData()), frame.GetFd())
 		return
 	}
 
