@@ -1,4 +1,4 @@
-package server
+package socket
 
 type Frame struct {
 	fd   int

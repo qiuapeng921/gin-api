@@ -1,4 +1,7 @@
-package server
+package socket
+
+const UserChat = 1
+const GroupChat = 2
 
 type SenderMessage struct {
 	SenderId int     `json:"sender_id"`
@@ -14,5 +17,3 @@ type Message struct {
 	Data        string `json:"data"`
 }
 
-const UserChat = 1
-const GroupChat = 2

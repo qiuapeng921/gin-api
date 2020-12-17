@@ -1,4 +1,4 @@
-package server
+package socket
 
 import (
 	"gin-api/app/utility/app"
