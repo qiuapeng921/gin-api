@@ -31,9 +31,14 @@ func init() {
 }
 
 func Run() {
-	gin.SetMode(os.Getenv("APP_ENV"))
+	env := os.Getenv("APP_ENV")
+	gin.SetMode(env)
 
-	engine := gin.Default()
+	engine := gin.New()
+	engine.Use(gin.Recovery())
+	if env != gin.ReleaseMode {
+		engine.Use(gin.Logger())
+	}
 
 	gin.ForceConsoleColor()
 
