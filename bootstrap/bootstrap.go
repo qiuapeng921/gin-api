@@ -16,6 +16,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"runtime"
 	"time"
 )
 
@@ -42,12 +43,10 @@ func Run() {
 	// 初始化全局中间件
 	engine.Use(middleware.RequestLog(), middleware.Cors(), middleware.RequestId())
 
-	// 设置路由
+	// 初始化路由
 	routers.SetupRouter(engine)
 
-	address := os.Getenv("HTTP_ADDRESS")
-	port := os.Getenv("HTTP_PORT")
-	endPoint := fmt.Sprintf("%s:%s", address, port)
+	endPoint := fmt.Sprintf("%s:%s", os.Getenv("HTTP_ADDRESS"), os.Getenv("HTTP_PORT"))
 
 	server := &http.Server{
 		Addr:           endPoint,
@@ -64,9 +63,13 @@ func Run() {
 
 	}()
 
-	welcome("http://" + endPoint)
+	fmt.Println(fmt.Sprintf("Server      Name:     %s", os.Getenv("APP_NAME")))
+	fmt.Println(fmt.Sprintf("System      Name:     %s", runtime.GOOS))
+	fmt.Println(fmt.Sprintf("Go          Version:  %s", runtime.Version()))
+	fmt.Println(fmt.Sprintf("Gin         Version:  %s", gin.Version))
+	fmt.Println(fmt.Sprintf("Listen      Address:  %s", endPoint))
 
-	// 等待中断信号以优雅地关闭服务器（设置 5 秒的超时时间）
+	// 等待中断信号以优雅地关闭服务器(设置5秒的超时时间)
 	quit := make(chan os.Signal)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
