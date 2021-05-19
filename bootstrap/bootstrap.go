@@ -3,8 +3,10 @@ package bootstrap
 import (
 	"context"
 	"fmt"
+	"gin-api/app/http/middleware"
 	"gin-api/app/utility/app"
 	"gin-api/app/utility/system"
+	"gin-api/app/utility/templates"
 	"gin-api/database"
 	"gin-api/routers"
 	"github.com/gin-gonic/gin"
@@ -35,7 +37,10 @@ func Run() {
 
 	engine := gin.Default()
 
-	gin.ForceConsoleColor()
+	// 模板初始化
+	templates.InitTemplate(engine)
+	// 初始化全局中间件
+	engine.Use(middleware.RequestLog(), middleware.Cors(), middleware.RequestId())
 
 	// 设置路由
 	routers.SetupRouter(engine)
@@ -54,7 +59,7 @@ func Run() {
 	go func() {
 		// 服务连接
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("listen: %s\n", err)
+			log.Println("listen:", err)
 		}
 
 	}()

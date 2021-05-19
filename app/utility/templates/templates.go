@@ -14,7 +14,7 @@ func InitTemplate(router *gin.Engine) {
 	router.HTMLRender = loadTemplates("./templates")
 }
 
-//多模板（模板继承）
+// 多模板（模板继承）
 func loadTemplates(templatesDir string) multitemplate.Renderer {
 	renderer := multitemplate.NewRenderer()
 

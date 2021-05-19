@@ -2,20 +2,11 @@ package routers
 
 import (
 	"gin-api/app/http/controller"
-	"gin-api/app/http/middleware"
-	"gin-api/app/utility/templates"
 	"gin-api/app/websocket"
 	"github.com/gin-gonic/gin"
 )
 
 func SetupRouter(router *gin.Engine) {
-	templates.InitTemplate(router)
-
-	router.Use(
-		middleware.RequestLog(),
-		middleware.Cors(),
-		middleware.RequestId(),
-	)
 
 	router.GET("/", controller.Index)
 
