@@ -11,7 +11,7 @@ type Binder struct {
 	client map[int]*websocket.Conn
 }
 
-// 绑定客户
+// Bind 绑定客户
 func (b *Binder) Bind(fd int, conn *websocket.Conn) {
 	b.mutex.Lock()
 	defer b.mutex.Unlock()
@@ -22,7 +22,7 @@ func (b *Binder) Bind(fd int, conn *websocket.Conn) {
 	log.Println("在线用户：", b.client)
 }
 
-// 解绑客户
+// UnBind 解绑客户
 func (b *Binder) UnBind(fd int) {
 	b.mutex.Lock()
 	defer b.mutex.Unlock()
@@ -30,14 +30,14 @@ func (b *Binder) UnBind(fd int) {
 	log.Println("下线用户：", b.client)
 }
 
-// 获取所有在线客户端
+// GetAll 获取所有在线客户端
 func (b *Binder) GetAll() map[int]*websocket.Conn {
 	b.mutex.Lock()
 	defer b.mutex.Unlock()
 	return b.client
 }
 
-// 获取所有现在的fd
+// GetAllFd 获取所有现在的fd
 func (b *Binder) GetAllFd() []int {
 	var fds []int
 	for fd, _ := range b.client {
@@ -46,7 +46,7 @@ func (b *Binder) GetAllFd() []int {
 	return fds
 }
 
-// 获取客户连接
+// GetConnByFd 获取客户连接
 func (b *Binder) GetConnByFd(fd int) *websocket.Conn {
 	conn, ok := b.client[fd]
 	if !ok {
@@ -55,7 +55,7 @@ func (b *Binder) GetConnByFd(fd int) *websocket.Conn {
 	return conn
 }
 
-// 获取客户fd
+// GetFdByConn 获取客户fd
 func (b *Binder) GetFdByConn(conn *websocket.Conn) int {
 	var fd int
 	for f, c := range b.GetAll() {

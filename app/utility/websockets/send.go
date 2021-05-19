@@ -21,7 +21,7 @@ func (s *Send) PushMessage(fd int, message SenderMessage) {
 	app.Error("push message", err)
 }
 
-// 发送消息给指定用户
+// Push 发送消息给指定用户
 func (s *Send) Push(fd int, message string) {
 	conn, ok := s.client[fd]
 	if !ok {
@@ -32,14 +32,14 @@ func (s *Send) Push(fd int, message string) {
 	app.Error("push message", err)
 }
 
-// 发送消息给所有用户
+// SendToAll 发送消息给所有用户
 func (s *Send) SendToAll(message string) {
 	for fd, _ := range s.GetAll() {
 		s.Push(fd, message)
 	}
 }
 
-// 发送消息给用户
+// SendToSome 发送消息给用户
 func (s *Send) SendToSome(fds []int, message string, exclude ...int) {
 	if len(fds) < 0 {
 		log.Println("fds为空发送结束")
