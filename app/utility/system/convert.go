@@ -7,7 +7,7 @@ import (
 	"reflect"
 )
 
-// json转struct
+// JsonToStruct
 func JsonToStruct(jsonStr string, obj interface{}) error {
 	err := json.Unmarshal([]byte(jsonStr), &obj)
 	if err != nil {
