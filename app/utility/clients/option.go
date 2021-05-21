@@ -11,21 +11,10 @@ import (
 	"net/url"
 	"os"
 	"strings"
-	"time"
 )
 
 // Option http.Request 配置方法
 type Option func(*http.Request)
-
-// HTTPClientOption HTTPClient 配置
-type HTTPClientOption func(*HTTPClient)
-
-// Timeout 超时时间
-func Timeout(timeout time.Duration) HTTPClientOption {
-	return func(client *HTTPClient) {
-		client.client.Timeout = timeout
-	}
-}
 
 // Header 设置 http.Request 头部信息
 func Header(key, value string) Option {

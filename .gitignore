@@ -6,3 +6,4 @@ main
 .env
 runtime/*
 vendor
+bin

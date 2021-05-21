@@ -14,6 +14,16 @@ type HTTPClient struct {
 	client http.Client
 }
 
+// HTTPClientOption HTTPClient 配置
+type HTTPClientOption func(*HTTPClient)
+
+// Timeout 超时时间
+func Timeout(timeout time.Duration) HTTPClientOption {
+	return func(client *HTTPClient) {
+		client.client.Timeout = timeout
+	}
+}
+
 // NewHTTPClient 返回一个 http 请求客户端
 func NewHTTPClient(options ...HTTPClientOption) *HTTPClient {
 	client := &HTTPClient{
