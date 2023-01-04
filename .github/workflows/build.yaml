@@ -1,0 +1,29 @@
+name: Build Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+          cache: true
+
+      - name: Build
+        run: go build -v ./...
+
+        # 使用 goreleaser 进行生成多平台代码并且上传到github release进行发布
+      - name: Create release on GitHub
+        uses: docker://goreleaser/goreleaser:latest
+        with:
+          args: release
+        env:
+          GITHUB_TOKEN: ${{secrets.ActionToken}}
